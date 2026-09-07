@@ -14,13 +14,18 @@
     <div id="app"></div>
 
     <script>
-        window.$docsify = {
-            name: 'GLVK',
-            loadSidebar: true,
-            loadNavbar: true,
-            subMaxLevel: 3
-        };
-    </script>
+    window.$docsify = {
+        name: 'GLVK',
+        loadSidebar: true,
+        loadNavbar: true,
+        subMaxLevel: 3,
+        // 모든 하위 디렉토리 접속 시 루트의 _sidebar.md, _navbar.md 참조
+        alias: {
+            '/.*/_sidebar.md': '/_sidebar.md',
+            '/.*/_navbar.md': '/_navbar.md'
+        }
+    };
+</script>
 
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
 </body>
