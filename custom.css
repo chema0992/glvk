@@ -14,6 +14,10 @@
     font-display: swap;
 }
 
+.markdown-section {
+    font-family: 'JoseonGulim', sans-serif;
+}
+
 /*제목 사이즈 */
 .app-name-link {
     font-weight: 800;
