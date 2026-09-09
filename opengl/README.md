@@ -52,7 +52,9 @@ C++ 경험이 너무 부족하다 느끼면 [Learn Cpp](https://www.learncpp.com
 <span class="glvk-def-tag">glCreateShader</span>는 OpenGL의 셰이더 생성 함수이고, <span class="glvk-var-tag">GL_VERTEX_SHADER</span>는 버텍스 셰이더를 나타내는 상수이며, <span class="glvk-func-tag">main()</span>은 프로그램의 진입점 함수입니다.
 
 <span class="glvk-def-tag">정의</span> : 초록색 단어는 자주 듣게 될 중요한 이름을 뜻합니다.
+
 <span class="glvk-func-tag">프로그램 구조</span> : 빨간색 단어는 함수 이름이나 클래스 이름을 뜻합니다.
+
 <span class="glvk-var-tag">변수</span> : 파란색 단어는 모든 OpenGL 상수를 포함한 변수를 뜻합니다.
 
 ## 목차

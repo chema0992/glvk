@@ -1,7 +1,7 @@
 /* GLVK */
 
 :root {
-    --theme-color: #6c63ff;
+    --theme-color: #e9ca42;
     --base-font-size: 16px;
 }
 
@@ -12,7 +12,7 @@
 }
 
 .glvk-def-tag {
-    color: #63ffa4;
+    color: #46be5a;
     padding: 2px 5px;
     border-radius: 4px;
 }
