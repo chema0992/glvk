@@ -4,6 +4,7 @@
   - [소개](/opengl/)
   - 시작하기
     - [OpenGL이란?](/opengl/what-is-opengl.md)
+    - [창 만들기](/opengl/create-window.md)
 
 - **Vulkan**
   - [소개](/vulkan/)
