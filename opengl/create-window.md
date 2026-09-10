@@ -1,6 +1,6 @@
 # 창 만들기 (준비하기)
 
-**주의: 이 글에서는 창을 띄우는게 아닌, 컴파일까지만 합니다.**
+<strong style="color: red;">주의: 이 글에서는 창을 띄우는게 아닌, 컴파일까지만 합니다.</strong>
 
 우리가 아무리 간지나는 (멋진) 3D 게임을 만들게 되더라도,
 일단 그릴 화면이 있어야 그리겠죠?
@@ -91,7 +91,8 @@ CMake는 [여기](https://cmake.org/download/)서 받을 수 있고, 다운로�
 
 설치를 다 했으면, 이제 설정을 해야합니다.
 CMake에는 소스코드 폴더와 컴파일 결과를 넣을 폴더가 필요합니다. 소스코드 폴더는 GLFW 소스 패키지의 루트 폴더 하시면 돼고 빌드 폴더의 경우엔 새 폴더 build를 생성한 다음 사진처럼 디렉터리를 선택합니다.
-![사진1](/assets/opengl/cmake.png)
+
+<img src="/assets/opengl/cmake.png" alt="CMake1">
 
 소스코더 폴더와 빌드 폴더가 세팅된 후에는 Configure 버튼을 클릭해서 CMake가 필요한 설정과 소스 코드들을 읽을 수 있도록 하고,
 프로젝트 생성자를 지정해야 하는데 원본은 Visual Studio 2019를 사용하고 있으므로 Visual Studio 16 옵션을 선택합니다.
@@ -155,8 +156,125 @@ project/
 네, 바로 코드 작성은 아니고요 ㅋㅋ 파일 생성만 하시면 됩니다.
 먼저 Visual Studio를 열고 새 프로젝트를 생성합니다. 여러 옵션이 표시되면 C++를 선택하고 빈 프로젝트(Empty Project)를 선택하세요. (프로젝트 이름은 상관없습니다. 다만 욕설을 적어둔다면 팀이 불쾌해 하겠죠). 모든 작업을 64비트 환경에서 수행할 예정인데 프로젝트가 기본적으로 32비트로 설정되어 있으므로, 상단의 디버그 옆 드롭다운 메뉴에서 x86을 x64로 변경해야 합니다.
 
-![사진](assets/opengl/vc_directories)
+<img src="/assets/opengl/cmake.png" alt="x86">
 
 드디어 작업 공간 마련 끝!
 
-(작성중..)
+## 링킹
+
+> tip! 'GLFW 바이너리 적용하기'를 보고 오셨다면, 다음 제목으로 가시면 됩니다.
+
+프로젝트에서 GLFW를 사용하려면 라이브러리 파일을 프로젝트에 **링크**해야 합니다.
+링커 설정에서 glfw3.lib를 사용하도록 지정하면 되지만,
+이 프로젝트는 그 라이브러리를 다른 폴더에 저장하기 때문에 glfw3.lib의 위치를 ​​알지 못합니다. 따라서 먼저 그 폴더를 프로젝트에 추가해야 합니다.
+
+Visual Studio에서는 라이브러리 파일이나 헤더 파일을 찾을 때 참조할 디렉토리를 지정할 수 있습니다.
+Solution Explorer에서 프로젝트 이름을 우클릭한 다음, 아래 사진과 같이 VC++ 디렉터리(VC++ Directories)로 이동합니다.
+
+<img src="/assets/opengl/vc_directories.png" alt="vc1">
+
+그 다음부터는 텍스트에 직접 삽입하거나 해당 위치 문자열을 클릭하고 <편집..>(<Edit..>) 옵션을 선택하여 사용자 지정 디렉터리를 추가해서 프로젝트에서 검색할 위치를 알려줄 수 있습니다. 라이브러리 디렉터리(Library Directories)와 포함 디렉터리(Include Directories) 이 둘에 해주세요.
+
+<img src="/assets/opengl/include_directories.png" alt="include1">
+
+이 설정 화면에서는 원하는만큼 추가로 디렉토리를 더 등록할 수 있고, 그 이후부터는 Visual Studio가 헤더 파일과 라이브러리 파일을 찾을 때, 그 디렉토리들도 함께 검색하게 됩니다.
+
+GLFW의 Include 폴더를 포함시키면 <GLFW/..>를 통해 GLFW의 모든 헤더 파일을 찾을 수 있습니다. 라이브러리 디렉터리에도 동일하게 적용됩니다.
+
+드디어 VS가 필요한 모든 파일을 찾을 수 있습니다! 이제 Linker 탭과 Input로 이동하여 GLFW를 프로젝트에 연결할 수 있습니다.
+
+<img src="/assets/opengl/linker_input.png" alt="linker1">
+
+라이브러리에 링크하려면 링커에 라이브러리 이름을 지정해야 합니다. 라이브러리 이름이 ```glfw3.lib```이므로, 이를 추가 종속성(Additional Dependencies) 필드에 추가합니다(수동으로 또는 <편집..> 옵션 사용). 그러면 그 다음부터 컴파일 할때마다 GLFW가 링크됩니다. GLFW 외에도 OpenGL 라이브러리에 대한 링크 항목을 추가해야 하지만, OS마다 다를 수 있습니다.
+
+1. 윈도우에서
+
+Windows 환경에서는 OpenGL 라이브러리인 opengl32.lib가 Microsoft SDK에 기본 포함되어 있어서, Visual Studio를 설치하면 자동으로 함께 설치됩니다. 그러니 링커 설정에 opengl32.lib를 추가해주면 됩니다.
+참고로 64비트 버전의 OpenGL 라이브러리는 32비트 버전과 마찬가지로 opengl32.lib라는 이름을 가지고 있습니다. 조금 불편하네요 :(
+
+2. 리눅스에서
+
+Linux 환경에서는 libGL.so 라이브러리를 링크해야 합니다. 그리고 링커 설정에 -lGL 옵션을 추가하면 됩니다.
+만약 그 라이브러리를 찾을 수 없다면, Mesa, NVIDIA 또는 AMD 개발용 패키지(dev package) 를 설치해야 할 수도 있습니다.
+(유감이죠. 뭘 또 설치해야한다니.)
+
+> tip! 혹시 리눅스에서 GCC를 사용한다면, -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl 옵션을 써보세요. 링크하지 않으면 참조 오류가 날 수도 있습니다.
+
+GLFW와 OpenGL 라이브러리를 추가한 후에는 GLFW를 위한 헤더파일을 아래처럼 만들 수 있습니다.
+
+```cpp
+#include <GLFW/glfw3.h>
+```
+
+**드디어 GLFW 끝!!!***
+
+### 컴파일 명령어로 퉁치신 분들..
+
+사실 그냥 컴파일할때 ``` g++ src/main.cpp src/glad.c -o main.exe -Iinclude -Llib -lglfw3 -lopengl32 -lgdi32 -luser32 ``` 
+이런식으로 하면 됩니다. 시간 끌어서 죄송해요! ㅎㅎ
+
+## GLAD
+
+네, 또 있습니다 ㅋㅋㅋㅋ
+
+전에 설명했듯 OpenGL은 표준/명세(specification) 일 뿐이라, OpenGL을 실제로 구현하는건 그래픽 카드 제조사의 역할입니다.
+그래서 드라이버가 너무 많아졌는데요, 결국 대부분의 OpenGL 함수는 컴파일 시점에는 위치를 알 수 없게 됐고, 실행 시점에 직접 요청 해서 가져와야 합니다.
+
+그래도 또 또 개발자는 필요한 함수의 위치를 ​​가져와 함수 포인터에 저장하여 나중에 사용할 수 있게 해야합니다. 근데 또 OS마다 달라요.
+
+윈도우는 이런식으로 해야했습니다. (예시)
+
+```cpp
+// 함수 프로토타입 정의
+typedef void (*GL_GENBUFFERS) (GLsizei, GLuint*);
+// 함수를 찾고 찾은 함수를 함수 포인터에 할당
+GL_GENBUFFERS glGenBuffers  = (GL_GENBUFFERS)wglGetProcAddress("glGenBuffers");
+// 이제서야 함수 사용 가능
+unsigned int buffer;
+glGenBuffers(1, &buffer);
+```
+
+확실히 매우 **짜증납니다.**
+이걸 하나하나 다 할 수 있다는건 부처님도 못할 지경입니다.
+하지만 이것도 라이브러리가 있습니다!!
+
+그 수많은 라이브러리들중, 저희는 GLAD를 쓸겁니다.
+
+## GLAD 세팅
+
+GLAD는 짜증났던 일들을 모두 처리해주는 오픈 소스 라이브러리입니다. 근데 GLAD는 일반적인 오픈소스 라이브러리들과는 조금 다른, 독특한 방식입니다.
+GLAD는 웹 서비스 (사이트)를 통해 원하는 OpenGL 버전에 맞춰 사용할 함수들을 지정하고, 해당 버전에 필요한 모든 OpenGL 함수들을 정의하고 불러오는 코드를 생성해줍니다.
+
+1. [GLAD 사이트](https://glad.dav1d.de/)에 접속합니다.
+2. Language을 C/C++로 설정합니다.
+3. Specification은 당연히 OpenGL로 설정하고요.
+3. Profile은 반드시 Core로 해주세요.
+4. API 부분은 gl 부분만 3.3으로 해주세요.
+5. 살짝 스크롤 했을때 나오는 Options에 Generate a loader가 체크되어 있는지 확인하세요.
+6. Generate 버튼을 클릭하여 라이브러리 파일들을 생성하세요.
+7. 파일 탐색기 비스무리한 UI가 나올텐데, 폴더들중 가장 아래에 있는 glad.zip의 이름을 클릭하면 다운로드 됩니다.
+
+> tip! 반드시 GLAD1을 사용하세요. 다른 사이트에서 GLAD2를 사용하면 나중에 에러가 나올겁니다.
+
+압축을 풀어보면 include/glad/ 폴더와 include/KHR/ 폴더, glad.c 파일이 있을텐데요?
+glad와 KHR 폴더를 프로젝트가 사용하는 include 디렉토리에 복사합니다. 또는 프로젝트에서 해당 경로를 Include Directories에 추가해도 됩니다.
+glad.c 파일을 프로젝트에 소스 파일로 추가합니다.
+그러면 main.cpp에서
+```cpp
+#include <glad/glad.h>
+```
+로 사용 가능합니다.
+
+컴파일 버튼(혹은 명령어)을 눌렀을 때 에러가 나지 않았다면..
+
+축하합니다!!
+
+**성공입니다.**
+
+모든 include 디렉터리와 라이브러리 디렉터리가 올바르게 설정되어 있는지와
+링커 설정에 입력한 라이브러리 이름이 실제 파일과 정확히 일치하는지만 확인했으면 바로 다음으로 가시면 됩니다.
+
+---
+
+> **Chema's Note** (2026.09.10)
+> "글 쓰다 죽을뻔했네요. 내용이 너무 길어요;"
