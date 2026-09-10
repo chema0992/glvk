@@ -29,3 +29,8 @@ UI와 기능이 아직 부족할 수 있습니다.
 - GLSL
 - SPIR-V
 - Graphics Math
+
+---
+
+> **Chema's Note** (2026.09.10)
+> "첫 시작"

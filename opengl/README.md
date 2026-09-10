@@ -61,3 +61,8 @@ C++ 경험이 너무 부족하다 느끼면 [Learn Cpp](https://www.learncpp.com
 
 - [소개](opengl/)
 - [OpenGL이란?](opengl/what-is-opengl.md)
+
+---
+
+> **Chema's Note** (2026.09.08)
+> "번역 너무 힘들어요"
