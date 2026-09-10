@@ -35,7 +35,7 @@ OpenGL을 제대로 배우고 활용하려면 그래픽 프로그래밍뿐만 �
 
 ## 미리 알아둬야 할 점들
 
-['OpenGL이란'](what-is-opengl.md) 글에서 더 자세히 말할거긴 한데, OpenGL은 플랫폼이 아닌 그래픽스 API라서 그 API를 호출하는 코드를 쓰기 위한 언어가 필요합니다.
+['OpenGL이란'](opengl/what-is-opengl.md) 글에서 더 자세히 말할거긴 한데, OpenGL은 플랫폼이 아닌 그래픽스 API라서 그 API를 호출하는 코드를 쓰기 위한 언어가 필요합니다.
 
 저는 가장 많이들 알고 있는 C++를 쓸거고, 그래서 이 글들을 따라하고 이해하기 위해서는 C++에 대한 기본이 필요합니다.
 가끔씩 약간 어려운 C++ 문법들도 설명할 예정이지만, 'Hello World' 프로그램 이상을 작성할 수 있으면 충분합니다.
@@ -60,4 +60,4 @@ C++ 경험이 너무 부족하다 느끼면 [Learn Cpp](https://www.learncpp.com
 ## 목차
 
 - [소개](opengl/)
-- [OpenGL이란?](what-is-opengl.md)
+- [OpenGL이란?](opengl/what-is-opengl.md)

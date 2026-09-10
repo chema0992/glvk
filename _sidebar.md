@@ -1,12 +1,15 @@
-- [🏠 GLVK](/)
+- [**GLVK**](/)
 
-- OpenGL
-  - [Introduction](/opengl/)
-  - Getting Started
-    - [OpenGL이란?](/opengl/what-is-opengl)
+- **OpenGL**
+  - [소개](/opengl/)
+  - 시작하기
+    - [OpenGL이란?](/opengl/what-is-opengl.md)
 
-- Vulkan
-  - [Introduction](/vulkan/)
+- **Vulkan**
+  - [소개](/vulkan/)
 
-- WebGL
-  - [Introduction](/webgl/)
+- **WebGL**
+  - [소개](/webgl/)
+
+- **기타**
+  - [크레딧](credits.md)
