@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>GLVK</title>
 
-    <link rel="stylesheet"
-      href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
-
+    <!-- Docsify 기본 테마 -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+    <!-- Prism 구문 강조 다크 테마 -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
-
+    <!-- Giscus 댓글 창 전용 CSS (필수) -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-giscus@1/dist/giscus.min.css">
+    <!-- 커스텀 CSS -->
     <link rel="stylesheet" href="/custom.css">
 </head>
 
@@ -23,15 +24,33 @@
             loadSidebar: true,
             loadNavbar: true,
             subMaxLevel: 3,
-            // 모든 하위 디렉토리 접속 시 루트의 _sidebar.md, _navbar.md 참조
             alias: {
                 '/.*/_sidebar.md': '/_sidebar.md',
                 '/.*/_navbar.md': '/_navbar.md'
+            },
+            giscus: {
+                repo: "chema0992/glvk",
+                repoId: "R_kgDOUQ-P5w",
+                category: "General",
+                categoryId: "DIC_kwDOUQ-P584DFXOY",
+                mapping: "pathname",
+                reactionsEnabled: "1",
+                emitMetadata: "0",
+                inputPosition: "top",
+                theme: "dark",
+                lang: "ko"
             }
         };
     </script>
 
+    <!-- Docsify & Giscus 메인 스크립트 -->
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-    <script src="https://cloudflare.com"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify-giscus@1/dist/giscus.min.js"></script>
+
+    <!-- 구문 강조(Prism) 필수 언어 스크립트 -->
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-c.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-glsl.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
 </body>
 </html>
