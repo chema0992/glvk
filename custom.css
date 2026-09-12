@@ -92,6 +92,14 @@
     font-family: 'Paperozi', sans-serif;
 }
 
+/* 코드 글자 크기 */
+
+.markdown-section pre code,
+.markdown-section code[class*="language-"] {
+  font-size: 1rem !important;      /* 기본값(약 0.85rem)보다 크게 설정 (1rem, 15px, 16px 등 원하는 수치로 조절) */
+  line-height: 1.6 !important;     /* 글자가 커진 만큼 줄 간격을 넓혀주면 훨씬 보기 편해집니다 */
+}
+
 /*제목 사이즈 */
 .app-name-link {
     font-weight: 800;
