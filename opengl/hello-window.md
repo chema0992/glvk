@@ -236,7 +236,7 @@ return 0;
 그러면 모든 리소스가 정리되고 프로그램이 정상적으로 종료됩니다. 이제 main.cpp을 컴파일해 보세요.
 문제가 없다면 아래 사진처럼 나올겁니다.
 
-![자료1](/assets/opengl/hellowindow.png)
+<img src="/assets/opengl/hellowindow.png" alt="자료1")
 
 이 단순하고 지루하고 이제까지의 과정이 허탈하게 느껴질 정도로 쓸모없게 생긴 검은 화면이 나왔다면.. **퍼펙트!!** 잘 하신겁니다!
 (만약 아주 재미있고, 깜빡이며, 해결해야할 일이 더 생겼다면.. 유감이네요. 더 읽어보세요) 원하는 화면을 얻지 못했거나 모든 요소가 어떻게 연결되는지 이해가 안 된다면 [전체 코드](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/1.2.hello_window_clear/hello_window_clear.cpp)를 확인하세요.
