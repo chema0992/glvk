@@ -61,6 +61,8 @@ C++ 경험이 너무 부족하다 느끼면 [Learn Cpp](https://www.learncpp.com
 
 - [소개](opengl/)
 - [OpenGL이란?](opengl/what-is-opengl.md)
+- [창 만들기](opengl/create-window.md)
+- [창 띄우기](opengl/hello-window.md)
 
 ---
 

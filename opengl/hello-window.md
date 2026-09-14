@@ -66,7 +66,7 @@ glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 set이 아니라 hint인 이유는.. 창 만드는걸 glfw가 하잖아요?
 그래서 hint인겁니다. 참고하라고 말하는거에요.
 
-``` glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);``` 이거는 MAJOR 버전을 3으로 설정,
+``` glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); ``` 이거는 MAJOR 버전을 3으로 설정,
 
 ``` glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); ``` 이건 MINOR 버전을 3으로 설정하라는 힌트입니다.
 쉽게 생각하면 그냥 버전을 3.3으로 한다는거에요.
@@ -312,7 +312,7 @@ while(!glfwWindowShouldClose(window))
 1. GL_COLOR_BUFFER_BIT (색상 버퍼)
 2. GL_DEPTH_BUFFER_BIT (깊이 버퍼)
 3. GL_STENCIL_BUFFER_BIT (스탠실 버퍼)
-   
+
 우리는 지금 색깔만 신경쓰면 되니까 색상 버퍼만 초기화 하면(clear) 하면 됩니다.
 
 ```cpp
@@ -340,3 +340,8 @@ glClear를 호출하면 glClearColor로 설정한 색깔로 지워지고요.
 이대로 끝내지 마세요!
 전체 코드에서 ``` glfwPollEvents(); ``` 부분을 ``` glfwWaitEvents(); ``` 로 바꾸고 실행해보세요.
 그러면.. 축하합니다! 최초로 최적화를 시도했습니다.
+
+---
+
+> **Chema's Note** (2026.09.14)
+> "짝짝짝"
