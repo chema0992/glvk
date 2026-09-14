@@ -6,7 +6,9 @@
     <title>GLVK - Graphics API Learning Hub</title>
     <link rel="icon" type="image/png" href="assets/icon.png">
     <!-- Docsify 기본 테마 -->
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+    <!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"> -->
+    <!-- 다크모드 테스트 -->
+     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-darklight-theme@latest/dist/style.min.css" type="text/css">
     <!-- Prism 구문 강조 라이트 테마 -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
     <!-- Giscus 댓글 창 CSS (올바른 경로) -->
@@ -25,6 +27,22 @@
             alias: {
                 '/.*/_sidebar.md': '/_sidebar.md',
                 '/.*/_navbar.md': '/_navbar.md'
+            },
+            darklightTheme: {
+                siteFont: 'PT Sans',
+                defaultTheme: 'light', // 기본 테마를 라이트모드로 지정
+                codeFontFamily: 'Roboto Mono, Monaco, courier, monospace',
+                bodyBaseColor: '#1a1a1a',
+                dark: {
+                    background: '#121212',
+                    toggleColor: '#ffffff',
+                    textColor: '#b3b3b3'
+                },
+                light: {
+                    background: '#ffffff',
+                    toggleColor: '#000000',
+                    textColor: '#222222'
+                }
             },
             search: {
                 maxAge: 0, // 캐시 유효 기간 (1일, ms 단위)
@@ -52,6 +70,8 @@
     </script>
     <!-- Docsify -->
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+    <!-- Docsify Darklight Theme Plugin -->
+    <script src="//cdn.jsdelivr.net/npm/docsify-darklight-theme@latest/dist/index.min.js" type="text/javascript"></script>
     <!-- Docsify Search Plugin -->
      <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
     <!-- Giscus 플러그인 (올바른 파일명) -->
