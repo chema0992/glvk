@@ -1,9 +1,8 @@
 /* GLVK */
 
 :root {
-  --theme-color: #e9ca42 !important;
-  --docsifydarklighttheme-accent-color: #e9ca42 !important;
-  --base-font-size: 16px !important;
+    --theme-color: #e9ca42;
+    --base-font-size: 16px;
 }
 
 .glvk-func-tag {
