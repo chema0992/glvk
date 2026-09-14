@@ -26,6 +26,14 @@
                 '/.*/_sidebar.md': '/_sidebar.md',
                 '/.*/_navbar.md': '/_navbar.md'
             },
+            search: {
+                maxAge: 0, // 캐시 유효 기간 (1일, ms 단위)
+                paths: 'auto',    // 모든 마크다운 문서 자동 검색
+                placeholder: '검색어를 입력하세요',
+                noData: '검색 결과가 없습니다 😢',
+                depth: 3,         // 검색할 헤더 깊이 (# ~ ######)
+                hideOtherSidebarContent: false // 검색 시 사이드바의 다른 항목 숨김 여부
+            },
             giscus: {
                 repo: "chema0992/glvk",
                 repoId: "R_kgDOUQ-P5w",
@@ -44,6 +52,8 @@
     </script>
     <!-- Docsify -->
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+    <!-- Docsify Search Plugin -->
+     <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
     <!-- Giscus 플러그인 (올바른 파일명) -->
     <script src="//cdn.jsdelivr.net/npm/docsify-giscus@1.0.2/dist/docsify-giscus.min.js"></script>
     <!-- 구문 강조 -->
