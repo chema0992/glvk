@@ -16,18 +16,6 @@
     <!-- 커스텀 CSS -->
     <link rel="stylesheet" href="/custom.css">
 </head>
-<script>
-  // Docsify 검색 결과 노출 시 인라인 HTML 태그 제거
-  document.addEventListener('DOMNodeInserted', function(e) {
-    if (e.target.className === 'search-results-item' || e.target.classList?.contains('matching-post')) {
-      const snippets = e.target.querySelectorAll('p');
-      snippets.forEach(p => {
-        // <tag> 형태의 텍스트 및 주석 제거
-        p.innerHTML = p.innerHTML.replace(/&lt;[^&]*&gt;/g, '');
-      });
-    }
-  });
-</script>
 <body>
     <div id="app"></div>
     <script>
