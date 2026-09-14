@@ -1,8 +1,20 @@
 /* GLVK */
 
-:root {
+/* :root {
     --theme-color: #e9ca42;
     --base-font-size: 16px;
+} */
+
+
+/* 모바일 다크모드 처리 */
+@media screen and (max-width: 768px) {
+    #docsify-darklight-theme {
+        top: 10px !important;    /* 위에서 10px 띄움 */
+        bottom: auto !important;  /* 기존 아래 고정 해제 */
+        right: 15px !important;   /* 오른쪽에서 15px 띄움 */
+        width: 35px !important;   /* 모바일 화면에 맞게 버튼 크기 살짝 축소 */
+        height: 35px !important;
+    }
 }
 
 .glvk-func-tag {
