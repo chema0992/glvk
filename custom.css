@@ -5,16 +5,17 @@
     --base-font-size: 16px;
 } */
 
+/* 1. 웹폰트 불러오기 (D2Coding 및 JetBrains Mono) */
+@import url('https://cdn.jsdelivr.net/gh/joungkyun/font-d2coding/d2coding.css');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
 
-/* 모바일 다크모드 처리 */
-@media screen and (max-width: 768px) {
-    #docsify-darklight-theme {
-        top: 10px !important;    /* 위에서 10px 띄움 */
-        bottom: auto !important;  /* 기존 아래 고정 해제 */
-        right: 15px !important;   /* 오른쪽에서 15px 띄움 */
-        width: 35px !important;   /* 모바일 화면에 맞게 버튼 크기 살짝 축소 */
-        height: 35px !important;
-    }
+/* 2. 코드 블록에 폰트 강제 적용 */
+.markdown-section pre code,
+.markdown-section code[class*="language-"],
+.markdown-section code:not([class*="language-"]) {
+  font-family: 'D2Coding', 'JetBrains Mono', Consolas, monospace !important;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
 .glvk-func-tag {
