@@ -1,8 +1,9 @@
 /* GLVK */
 
 :root {
-    --theme-color: #e9ca42;
-    --base-font-size: 16px;
+  --theme-color: #e9ca42 !important;
+  --docsifydarklighttheme-accent-color: #e9ca42 !important;
+  --base-font-size: 16px !important;
 }
 
 .glvk-func-tag {
@@ -21,6 +22,12 @@
     color: #6373ff;
     padding: 2px 5px;
     border-radius: 4px;
+}
+
+/* 검색 정렬 */
+
+.search input {
+  text-align: center !important;
 }
 
 /* 폰트 */
