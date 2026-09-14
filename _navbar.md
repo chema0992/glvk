@@ -1,4 +1,2 @@
-- [OpenGL](opengl/)
-- [Vulkan](vulkan/)
-- [WebGL](webgl/)
+- [Home](/)
 - [GitHub](https://github.com/chema0992/glvk)

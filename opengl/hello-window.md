@@ -184,7 +184,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 ```cpp
 glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-``` 
+```
 
 창이 처음 표시될 때도 ``` framebuffer_size_callback ``` 함수는 호출되고, 이때 전달되는 인자는 최종적인 창의 너비와 높이입니다. Retina 디스플레이 같은 고해상도 화면에서는 너비와 높이가 원래 값보다 **꽤나 높아질 수도** 있습니다.
 
@@ -222,7 +222,14 @@ while(!glfwWindowShouldClose(window))
 ### 이중 버퍼
 
 (아니 이런 방금 tip에 말했는데 번역하다보니 바로 뒤에 나왔네요. 에너지 소모를 줄이기 위해 원본으로 하겠습니다.)
-애플리케이션이 단일 버퍼에 이미지를 그릴 때, 결과 이미지에 깜빡임 현상이 발생할 수 있습니다. 이는 최종 출력 이미지가 즉시 그려지는 것이 아니라 픽셀 단위로, 일반적으로 왼쪽에서 오른쪽, 위에서 아래로 순차적으로 그려지기 때문입니다. 렌더링이 진행되는 동안 이미지가 사용자에게 실시간으로 표시되지 않으므로, 결과물에 화면 깜박임 같은 문제(아티팩트)가 발생할 수 있습니다. 이러한 문제를 해결하기 위해 윈도우 기반 애플리케이션은 이중 버퍼 렌더링 방식을 사용합니다. 프런트 버퍼에는 화면에 표시되는 최종 출력 이미지가 저장되고, 모든 렌더링 명령은 백 버퍼에 그려집니다. 모든 렌더링 명령이 완료되면 백 버퍼의 이미지를 프런트 버퍼로 전환하여 이미지가 렌더링되는 동안에도 화면에 표시될 수 있도록 함으로써 앞서 언급한 아티팩트를 제거합니다.
+
+애플리케이션이 단일 버퍼에 이미지를 그릴 때, 결과 이미지에 깜빡임이 발생할 수 있습니다.
+이는 최종 출력 이미지가 즉시 그려지는 것이 아니라 픽셀 단위로,
+일반적으로 왼쪽에서 오른쪽, 위에서 아래로 순차적으로 그려지기 때문입니다.
+
+렌더링이 진행되는 동안 이미지가 사용자에게 실시간으로 표시되지 않으므로, 결과물에 화면 깜박임 같은 문제(아티팩트)가 발생할 수 있습니다.
+
+이러한 문제를 해결하기 위해 윈도우 기반 애플리케이션은 이중 버퍼 렌더링 방식을 사용합니다. 프런트 버퍼에는 화면에 표시되는 최종 출력 이미지가 저장되고, 모든 렌더링 명령은 백 버퍼에 그려집니다. 모든 렌더링 명령이 완료되면 백 버퍼의 이미지를 프런트 버퍼로 전환하여 이미지가 렌더링되는 동안에도 화면에 표시될 수 있도록 함으로써 앞서 언급한 아티팩트를 제거합니다.
 
 ## 마무리할때
 
@@ -253,4 +260,83 @@ void processInput(GLFWwindow *window)
 }
 ```
 
-(작성중)
+위 코드에선 유저가 escape key (백스페이스 키)를 눌렀는지 확인하는 코드입니다. (만약 안 눌렸으면 <span class="glvk-func-tag">glfwGetKey</span>는 <span class="glvk-var-tag">GLFW_RELEASE</span>를 반환)
+
+만약 유저가 escape key를 누르면 <span class="glvk-func-tag">glfwSetwindowShouldClose</span>를 이용해 <span class="glvk-var-tag">WindowShouldClose</span> 를 **true**로 설정해서 닫습니다.
+
+이제 렌더 루프가 돌아갈때 조건이 만족하지 못하게 되고 창이 닫힙니다.
+
+그래서 아래 코드처럼 각 반복마다 processInput을 호출하게 만들면 됩니다.
+
+```cpp
+while (!glfwWindowShouldClose(window))
+{
+    processInput(window);
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+}
+```
+
+이렇게 매 프레임마다 키가 눌렸는지 감지할 수 있습니다.
+(렌더링 루프의 한 반복을 프레임이라고 합니다.)
+
+## 렌더링
+
+~~*아니 진짜 언제 끝나는거야*~~
+
+렌더링 명령은 모두 렌더링 루프 안에 넣어야 합니다. 당연하죠? 렌더링 루프 밖에다가 두면 영영 실행되지 못할겁니다.
+그래서 코드는 아래처럼 생겼습니다. (예시)
+
+```cpp
+// render loop
+while(!glfwWindowShouldClose(window))
+{
+    // 키 눌렸는지 감지하는거
+    processInput(window);
+
+    // 멋진 렌더링 명령들
+    ...
+
+    // 이벤트를 확인하고 호출한 다음 버퍼 교체
+    glfwPollEvents();
+    glfwSwapBuffers(window);
+}
+```
+
+제대로 작동하는지 테스트를 해봐야겠죠?
+그래서 원하는 색상으로 바꿀려고 합니다. 하지만 뭘 그리기 전에 먼저 화면을 지워야합니다. 그렇지 않으면 이전 프레임이 계속 남아 있게 될겁니다. (잔상이라고 부르는데, 이걸 좋아하는 사람은 몇 없을겁니다)
+
+<span class="glvk-func-tag">glClear</span>를 써서 지울수 있고, 인자로는 아래 3가지 비트를 넣을 수 있습니다.
+
+1. GL_COLOR_BUFFER_BIT (색상 버퍼)
+2. GL_DEPTH_BUFFER_BIT (깊이 버퍼)
+3. GL_STENCIL_BUFFER_BIT (스탠실 버퍼)
+   
+우리는 지금 색깔만 신경쓰면 되니까 색상 버퍼만 초기화 하면(clear) 하면 됩니다.
+
+```cpp
+glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+glClear(GL_COLOR_BUFFER_BIT);
+```
+
+(와 너무 감동적이에요. 색깔이 바꼈어요)
+
+glClearColor는 바로 그 색깔로 클리어(초기화) 한다기보단, 그냥 초기화 할때 무슨 색깔로 초기화 할지를 정하는겁니다.
+glClear를 호출하면 glClearColor로 설정한 색깔로 지워지고요.
+
+컴파일해보면 어두운 녹색창이 나올겁니다!
+
+> tip! 예전 글을 기억하신다면 glClearColor 함수는 상태 설정 함수고 glClear 함수는 상태를 가져와서 사용하는 state using 함수란 걸 알 수 있을겁니다.
+
+<img src="/assets/opengl/hellowindow2.png" alt="자료2">
+
+전체 코드는 [여기](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/1.2.hello_window_clear/hello_window_clear.cpp) 혹은 [깃허브](https://github.com/JoeyDeVries/LearnOpenGL/blob/master/src/1.getting_started/1.2.hello_window_clear/hello_window_clear.cpp) 에서 찾을 수 있습니다.
+
+드디어 끝났습니다! (짝짝짝)
+
+## 잠깐
+
+이대로 끝내지 마세요!
+전체 코드에서 ``` glfwPollEvents(); ``` 부분을 ``` glfwWaitEvents(); ``` 로 바꾸고 실행해보세요.
+그러면.. 축하합니다! 최초로 최적화를 시도했습니다.
