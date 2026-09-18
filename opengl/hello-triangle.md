@@ -598,7 +598,7 @@ glBindVertexArray(0);
 왼쪽 이미지는 익숙한 사각형이고,
 오른쪽 이미지는 와이어프레임 모드(wireframe mode)로 그려진 사각형입니다. 와이어프레임 사각형을 보면 사각형이 실제로 두 개의 삼각형으로 구성되어 있음을 알 수 있습니다.
 
-![아니좀끝나라고](/assets/opengl/hellotriangle2.png)
+<img src="/assets/opengl/hellotriangle2.png" alt="아니좀끝나라고">
 
 > tip! 와이어 프레임 모드란? 삼각형을 와이어프레임 모드로 그리려면, glPolygonMode을 사용해 OpenGL이 프리미티브를 그리는 방식을 설정할 수 있습니다.
 첫 번째 인자는 모든 삼각형의 앞면과 뒷면에 적용하겠다는 의미이고, 두 번째 인자는 삼각형을 선(Line)으로 그리라는 의미입니다.
