@@ -3,7 +3,7 @@
 <span style="color: red;">경고: 뇌에서 쥐가 날 수 있음. 완독 후엔 반드시 병원을 방문할 것</span>
 
 OpenGL에서 모든건 전부 3D 공간 (3차원)에 있습니다. 하지만 화면이랑 창은 2D네요?
-그래서 OpenGL의 핵심 중 하나는 **3차원 좌표를 화면에 맞는 2차원 픽셀로 변환**하는 거일정도로 중요합니다.
+그래서 OpenGL의 핵심 중 하나는 **3차원 좌표를 화면에 맞는 2차원 픽셀로 변환**하는 거 입니다.
 
 3차원 좌표를 2차원 픽셀로 변환하는건 OpenGL의 **graphics pipeline**(그래픽스 파이프라인)이 맡게되는데, 그래픽스 파이프라인은 두 개로 나눌 수 있습니다.
 
@@ -345,7 +345,7 @@ glDeleteShader(fragmentShader);
 
 정점 데이터는 대충 아래처럼 되어 있습니다.
 
-<img src="vertex_attribute_pointer" alt="이름뭐로하냐">
+<img src="/assets/opengl/vertex_attribute_pointer.png" alt="이름뭐로하냐">
 
 - 위치 데이터는 4바이트 float 형태로 저장됩니다.
 - 각 위치들은 이런 값 3개로 되어 있습니다.
@@ -419,3 +419,8 @@ someOpenGLFunctionThatDrawsOurTriangle();
 
 (아기 주제에 거부를..)
 
+정점 배열 객체는 아래 같은 함수 호출로 변경된 상태를 저장합니다.
+
+- `glEnableVertexAttribArray` 또는 `glDisableVertexAttribArray` 호출
+- `glVertexAttribPointer`를 통한 정점 속성 구성
+- `glVertexAttribPointer` 호출에 의해 정점 속성과 연결된 정점 버퍼 객체
