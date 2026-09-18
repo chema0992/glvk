@@ -424,3 +424,184 @@ someOpenGLFunctionThatDrawsOurTriangle();
 - `glEnableVertexAttribArray` 또는 `glDisableVertexAttribArray` 호출
 - `glVertexAttribPointer`를 통한 정점 속성 구성
 - `glVertexAttribPointer` 호출에 의해 정점 속성과 연결된 정점 버퍼 객체
+
+<img src="/assets/opengl/vertex_array_objects.png" alt="진짜이름뭐로하지">
+
+VAO를 생성하는건 VBO랑 비슷합니다.
+
+```cpp
+unsigned int VAO;
+glGenVertexArrays(1, &VAO);
+```
+
+VAO를 쓰려면 VAO를 <span class="glvk-func-tag">glBindVertexArray</span> 함수로 바인딩해야합니다. 그 후에는 해당 VBO와 속성 포인터를 바인딩/구성하고, 나중에 다시 사용할 수 있도록 VAO 바인딩을 해제해야하고요.
+객체를 그리려고 할 때는 그냥 원하는 설정이 저장된 VBO를 바인딩하고 나서 그리기 호출을 하면 끝입니다. 코드로 표현하면 이렇습니다.
+
+```cpp
+// ..:: 초기화 코드 (객체가 자주 변경되지 않는 한 한 번만 실행) :: ..
+// 1. 정점 배열 객체 바인딩
+glBindVertexArray(VAO);
+// 2. OpenGL에서 사용할 수 있도록 정점 배열을 버퍼에 복사합니다.
+glBindBuffer(GL_ARRAY_BUFFER, VBO);
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+// 3. 정점 속성 포인터를 설정합니다.
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+glEnableVertexAttribArray(0);  
+
+[...];
+
+// ..:: 그리기 코드 (렌더링 루프 내) :: ..
+// 4. 객체를 그려요~
+glUseProgram(shaderProgram);
+glBindVertexArray(VAO);
+someOpenGLFunctionThatDrawsOurTriangle();
+```
+
+이게 다입니다. 이제까지의 고통과 역겨움, 짜증과 인내가 다 이걸 위한거였습니다.
+정점 속성 구성과 사용할 VBO를 저장하는 VAO를 만드는 거.
+보통 여러 객체를 그려야 할땐 먼저 VAO(그리고 필요한 VBO 정점 속성 포인터)를 생성이랑 설정해 두고 저장합니다. 그리고 특정 객체를 그리려는 순간, 해당 VAO를 가져와서 바인딩 하고, 객체를 그린뒤 다시 VAO를 해제 하면 됩니다.
+
+### 모두가 기다리던 삼각형
+
+원하는 객체를 그리기 위해 OpenGL은 <span class="glvk-func-tag">glDrawArrays</span> 함수를 제공합니다. 이 함수는 현재 활성화된 쉐이더, 이전에 설정해 둔 정점 속성 구성, 그리고 VBO의 정점 데이터(VAO를 통해 간접적으로 연결된)를 사용해 프리미티브를 그립니다.
+
+```cpp
+glUseProgram(shaderProgram);
+glBindVertexArray(VAO);
+glDrawArrays(GL_TRIANGLES, 0, 3);
+```
+
+glDrawArrays의 인자들
+
+1. OpenGL 프리미티브 타입(primitive type), 삼각형을 그리고 싶으니 GL_TRIANGLES를 전달합시다
+2. 그릴 정점 배열의 시작 인덱스를 지정, 0으로 둡시다.
+3. 그릴 정점의 개수를 지정, 3개로 합시다.
+
+이제 코드를 컴파일 해보세요! 오류가 나면 처음부터 읽으셔야 합니다 ㅋㅎ
+
+컴파일이 잘 되면 사진처럼 나올겁니다.
+
+<img src="/assets/opengl/hellotriangle.png" alt="드디어">
+
+전체 소스코드는 [깃허브](https://github.com/JoeyDeVries/LearnOpenGL/blob/master/src/1.getting_started/2.1.hello_triangle/hello_triangle.cpp) 나 [여기](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.1.hello_triangle/hello_triangle.cpp) 여기서 받으세요.
+
+## EBO
+
+진짜 마지막으로 정점을 렌더링 할때 확인하고 싶은게 있습니다. 바로 element buffer objects (EBO) 입니다. 예시로 설명해보면
+
+예를 들어, 우리가 아주 거만해져서(?) 삼각형 대신 사각형을 그리고 싶다고 해봅시다. OpenGL은 기본적으로 삼각형을 사용하기 때문에 사각형을 그리려면 두개의 삼각형으로 나눠야 합니다. 이렇게 하려면 다음과 같은 정점 집합이 만들어 집니다.
+
+```cpp
+float vertices[] = {
+    // 삼각형1
+     0.5f,  0.5f, 0.0f,  // top right
+     0.5f, -0.5f, 0.0f,  // bottom right
+    -0.5f,  0.5f, 0.0f,  // top left 
+    // 삼각형2
+     0.5f, -0.5f, 0.0f,  // bottom right
+    -0.5f, -0.5f, 0.0f,  // bottom left
+    -0.5f,  0.5f, 0.0f   // top left
+};
+```
+
+보니까 오른쪽 아래와 왼쪽 위를 두 번씩 지정했죠?
+같은 사각형을 6개가 아닌 4개의 정점만으로도 표현할 수 있기 때문에 이는 50%의 오버헤드를 발생시킵니다.
+지금은 아무것도 아니지만 겹치는게 1000개가 넘으면 말이 달라지겠죠?
+가장 이상적인건 고유한 정점만 저장하고, 이 정점들을 어떤 순서로 그릴지 지정하는 거입니다. 이렇게 하면 사각형에 필요한 정점 4개만 저장하고, 그리는 순서만 지정하면 됩니다. OpenGL은 이걸 해줄까요?
+
+**딸깍**.
+
+다행히 EBO가 그런 방식으로 작동합니다.
+EBO는 정점 버퍼 객체와 마찬가지로 OpenGL이 어떤 정점을 그릴지 결정하는 데 사용하는 인덱스를 저장하는 버퍼입니다.
+이러한 인덱스 기반 그리기(indexed drawing) 방식이 바로 우리가 해결하고자 하는 문제의 답이 될겁니다.
+시작하려면 먼저 (고유한) 정점과 해당 정점을 사각형으로 그릴 인덱스를 지정해야 합니다.
+
+```cpp
+float vertices[] = {
+     0.5f,  0.5f, 0.0f,  // top right
+     0.5f, -0.5f, 0.0f,  // bottom right
+    -0.5f, -0.5f, 0.0f,  // bottom left
+    -0.5f,  0.5f, 0.0f   // top left 
+};
+unsigned int indices[] = {  // note that we start from 0!
+    0, 1, 3,   // first triangle
+    1, 2, 3    // second triangle
+};
+```
+
+이제 인덱스를 쓸때 정점을 4개만 쓰면 됩니다. 다음으로 EBO를 만듭시다.
+
+```cpp
+unsigned int EBO;
+glGenBuffers(1, &EBO);
+```
+
+VBO처럼 EBO는 인덱스들을 버퍼에 `glBindBuffer` 함수로 복사할 수 있습니다.
+바인딩하는 사이에 이 콜을 넣고 언바인딩까지 할수도 있습니다.
+
+근데 <span class="glvk-var-tag">GL_ELEMENT_ARRAY_BUFFER</span>을 써야됩니다.
+
+```cpp
+glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); 
+```
+
+버퍼 대상으로 GL_ELEMENT_ARRAY_BUFFER 지정했죠?
+마지막으로 해야 할 일은 인덱스 버퍼에서 삼각형을 렌더링하도록 `glDrawArrays` 호출을 `glDrawElements`로 바꾸는 거입니다.
+`glDrawElements`를 사용해서 현재 바인딩된 요소 버퍼 객체에 제공된 인덱스를 사용하여 그림을 그립니다.
+
+```cpp
+glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+```
+
+첫번째 인자는 `glDrawArrays`처럼 그릴 모드를 지정합니다.
+두번째 인자는 그릴 요소의 개수고요.
+세번째 인자는 인덱스의 데이터 유형으로, `GL_UNSIGNED_INT` 로 하겠습니다. 
+마지막 인자는 EBO 내의 오프셋을 지정하거나 인덱스 배열을 전달할 수 있지만, 0으로 둡니다.
+
+`glDrawElements` 함수는 현재 G`L_ELEMENT_ARRAY_BUFFER` 타겟에 바인딩된 EBO에서 인덱스를 가져옵니다. 즉, 인덱스를 사용하여 객체를 렌더링할 때마다 해당 EBO를 바인딩해야 하므로 다소 번거롭습니다. 다행히 VAO는 EBO 바인딩 정보도 관리합니다. VAO가 바인딩된 상태에서 마지막으로 바인딩된 요소 버퍼 객체가 해당 VAO의 요소 버퍼 객체로 저장됩니다. 따라서 VAO에 바인딩하면 해당 EBO도 자동으로 바인딩됩니다.
+
+<img src="/assets/opengl/vertex_array_objects_ebo.png" alt="제발끝나라">
+
+VAO는 타겟이 GL_ELEMENT_ARRAY_BUFFER 일때 glBindBuffer 콜을 저장해둡니다. 이는 VAO를 언바인드 하기 전에 EBO를 먼저 언바인드 하지 않도록 주의해야함을 의미합니다.
+그렇지 않으면 VAO는 EBO가 설정되지 않은 상태가 되버립니다.
+
+이제 초기화랑 그리기 코드는
+
+```cpp
+// ..:: Initialization code :: ..
+// 1. bind Vertex Array Object
+glBindVertexArray(VAO);
+// 2. copy our vertices array in a vertex buffer for OpenGL to use
+glBindBuffer(GL_ARRAY_BUFFER, VBO);
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+// 3. copy our index array in a element buffer for OpenGL to use
+glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+// 4. then set the vertex attributes pointers
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+glEnableVertexAttribArray(0);  
+
+[...]
+  
+// ..:: Drawing code (in render loop) :: ..
+glUseProgram(shaderProgram);
+glBindVertexArray(VAO);
+glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+glBindVertexArray(0);
+```
+
+가 됩니다.
+
+프로그램을 컴파일하고 실행하면 사진처럼 보일겁니다.
+왼쪽 이미지는 익숙한 사각형이고,
+오른쪽 이미지는 와이어프레임 모드(wireframe mode)로 그려진 사각형입니다. 와이어프레임 사각형을 보면 사각형이 실제로 두 개의 삼각형으로 구성되어 있음을 알 수 있습니다.
+
+![아니좀끝나라고](/assets/opengl/hellotriangle2.png)
+
+> tip! 와이어 프레임 모드란? 삼각형을 와이어프레임 모드로 그리려면, glPolygonMode을 사용해 OpenGL이 프리미티브를 그리는 방식을 설정할 수 있습니다.
+첫 번째 인자는 모든 삼각형의 앞면과 뒷면에 적용하겠다는 의미이고, 두 번째 인자는 삼각형을 선(Line)으로 그리라는 의미입니다.
+이후의 모든 드로잉 호출은 삼각형을 와이어프레임 모드로 렌더링하게 되며, 기본 설정으로 되돌리려면 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)을 호출하면 됩니다.
+
+(작성중)
