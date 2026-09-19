@@ -604,4 +604,33 @@ glBindVertexArray(0);
 첫 번째 인자는 모든 삼각형의 앞면과 뒷면에 적용하겠다는 의미이고, 두 번째 인자는 삼각형을 선(Line)으로 그리라는 의미입니다.
 이후의 모든 드로잉 호출은 삼각형을 와이어프레임 모드로 렌더링하게 되며, 기본 설정으로 되돌리려면 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)을 호출하면 됩니다.
 
-(작성중)
+오류가 나면 다시 읽어보시고 전체 소스코드는 [깃허브2트](https://github.com/JoeyDeVries/LearnOpenGL/blob/master/src/1.getting_started/2.2.hello_triangle_indexed/hello_triangle_indexed.cpp) 혹은 [여기2트](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.2.hello_triangle_indexed/hello_triangle_indexed.cpp) 참고하세요.
+
+그리기가 정상적으로 된다면 축하합니다!! 고비를 넘겼습니다.
+물론 이건 수박 겉핥기지만요
+
+아무튼 어려운거 하셨으니 잠시 쉬셔도 됩니다.
+다음 단계부턴 이해가 점점 더 쉬워질테니까요 (아마도요)
+
+## 참고자료
+
+[antongerdelan.net/hellotriangle](https://antongerdelan.net/opengl/hellotriangle.html): 첫 번째 삼각형 렌더링에 대한 **안톤 게르델란의** 방식입니다.
+
+[open.gl/drawing](https://open.gl/drawing): 첫 번째 삼각형 렌더링에 대한 **알렉산더 오버보르드**의 방식입니다.
+
+[antongerdelan.net/vertexbuffers](https://antongerdelan.net/opengl/vertexbuffers.html): 정점 버퍼 오브젝트(vertex buffer objects)에 대한 몇 가지 추가적인 말입니다.
+
+[learnopengl.com/In-Practice/Debugging](https://learnopengl.com/In-Practice/Debugging): 진행하다 막힌다 싶으면 OpenGL 디버깅에 대해(디버그 출력 섹션 전까지) 조금 읽어보세요.
+
+## 연습 문제
+
+기습 연습 문제입니다.
+
+- 데이터에 더 많은 정점을 추가해서 `glDrawArrays`를 통해 두 개의 삼각형을 나란히 그려보세요. ([정답](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.3.hello_triangle_exercise1/hello_triangle_exercise1.cpp) 혹은 [여기](https://github.com/JoeyDeVries/LearnOpenGL/blob/master/src/1.getting_started/2.3.hello_triangle_exercise1/hello_triangle_exercise1.cpp))
+- 서로 다른 두 개의 VAO, VBO를 사용해서 동일한 두 개의 삼각형을 생성해 보세요. ([정답](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.4.hello_triangle_exercise2/hello_triangle_exercise2.cpp) 혹은 [여기](https://github.com/JoeyDeVries/LearnOpenGL/blob/master/src/1.getting_started/2.4.hello_triangle_exercise2/hello_triangle_exercise2.cpp))
+- 두 개의 쉐이더 프로그램을 작성하고, 두 번째 프로그램은 노랑을 출력하는 프래그먼트 쉐이더를 써보세요. 그런 다음 두 삼각형 중 하나가 노란색을 출력하게 다시 그립니다. ([정답](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.5.hello_triangle_exercise3/hello_triangle_exercise3.cpp) 혹은 [여기](https://github.com/JoeyDeVries/LearnOpenGL/blob/master/src/1.getting_started/2.5.hello_triangle_exercise3/hello_triangle_exercise3.cpp))
+
+---
+
+> **Chema's Note** (2026.09.19)
+> "천 리 길도 한 걸음부터"
