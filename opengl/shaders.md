@@ -44,3 +44,35 @@ glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
 std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
 ```
 
+하지만 대부분은 16을 반환할겁니다.
+
+### 타입
+
+GLSL은 다른 언어들처럼 타입을 갖고 있어요. C 개발자라면 익숙해할 int, float, double, uint, bool이 있거든요. 그리고 벡터와 행렬이란 타입도 많이 쓰게될겁니다.
+행렬은 나중에 자세히 다룰게요.
+
+#### 벡터
+
+GLSL에서 벡터는 기본 유형들을 담을 수 있는 2~4개 구성 요소로 이루어진 컨테이너입니다. 벡터엔 아래 같은 타입이 있습니다. (n은 구성 요소의 개수입니다. vecn이면 vec4, vec3 이런거에요)
+
+- vecn: n개의 부동소수점(float) 값으로 이뤄진 근-본 벡터
+- bvecn: n개의 불리언(bool) 값으로 이뤄진 벡터
+- ivecn: n개의 정수(int) 값으로 이뤄진 벡터
+- uvecn: n개의 부호 없는 정수(uint) 값으로 이뤄진 벡터
+- dvecn: n개의 더블(double) 값으로 이뤄진 vecn의 확장 벡터
+
+대부분 vecn을 쓰게될겁니다.
+
+벡터의 구성 요소는 vec.x 이런식으로 접근할 수 있습니다.
+첫번째 요소는 .x, 두번째 요소는 .y, 세번째 요소는 .z, 네번째 요소는 .w로요. GLSL에선 색상엔 rgba를, 텍스처 좌표엔 stpq를 사용해서 매핑이 가능합니다.
+
+벡터 데이터 타입은 스위즐링(swizzling)이라는 아주 흥미로운(?) 구성 요소 선택 기능을 제공합니다. 스위즐링을 사용하면 아래 코드처럼 쓸 수 있습니다.
+
+```glsl
+vec2 someVec;
+vec4 differentVec = someVec.xyxx;
+vec3 anotherVec = differentVec.zyw;
+vec4 otherVec = someVec.xxxx + anotherVec.yxzy;
+```
+
+(작성중)
