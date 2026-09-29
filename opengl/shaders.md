@@ -238,4 +238,8 @@ uniform을 잘 업데이트 했으면 영상처럼 될겁니다.
   브라우저가 비디오 태그를 지원하지 않습니다.
 </video>
 
+모르겠으면 [소스코드](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/3.1.shaders_uniform/shaders_uniform.cpp) 보시고요
+
+유니폼 참 유용하죠? 하지만 각 정점에 색상을 설정하려면 어떻게 해야될까요? 이땐 정점의 개수만큼 유니폼을 설정해야 됩니다. 끔찍하죠. 그래서 정점 속성에 더 많은 데이터를 포함하는 방법을 써봅시다!
+
 (작성중)
