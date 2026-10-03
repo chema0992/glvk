@@ -242,4 +242,104 @@ uniform을 잘 업데이트 했으면 영상처럼 될겁니다.
 
 유니폼 참 유용하죠? 하지만 각 정점에 색상을 설정하려면 어떻게 해야될까요? 이땐 정점의 개수만큼 유니폼을 설정해야 됩니다. 끔찍하죠. 그래서 정점 속성에 더 많은 데이터를 포함하는 방법을 써봅시다!
 
-(작성중입니다!)
+### 더 많은 속성
+
+이제까지 지루한 VBO 채우기와 정점 속성 포인터를 구성하고 VAO에 저장하기를 했습니다. 이번엔 정점 데이터에 색상까지 넣어봅시다. 색상 데이터를 **세 개의 float** 타입으로 정점 배열에 추가하면 됩니다.
+각 모서리에 빨강, 초록, 파랑을 넣을게요.
+
+```cpp
+float vertices[] = {
+    // 위치ㅣㅣㅣㅣ         // 색깔
+     0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // 오른쪽
+    -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // 왼쪽
+     0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // 위!
+};
+```
+
+이제 데이터를 많이 보내니까 버텍스 쉐이더를 수정해야해요. **레이아웃 지정자**를 사용해서 aColor 속성의 위치를 1로 설정합시다.
+
+```glsl
+#version 330 core
+layout (location = 0) in vec3 aPos;   // 위치 변수는 위치 속성이 0입니다
+layout (location = 1) in vec3 aColor; // 색상 변수는 위치 속성이 1입니다
+  
+out vec3 ourColor; // 프래그먼트 셰이더에 색상을 출력합니다
+
+void main()
+{
+    gl_Position = vec4(aPos, 1.0);
+    ourColor = aColor; // set ourColor to the input color we got from the vertex data
+}
+```
+
+이제 프래그먼트의 색상에 유니폼 변수를 안 쓰니까 프래그먼트 쉐이더도 바꿉니다.
+
+```glsl
+#version 330 core
+out vec4 FragColor;  
+in vec3 ourColor;
+  
+void main()
+{
+    FragColor = vec4(ourColor, 1.0);
+}
+```
+
+~~아니 진짜 길네~~
+
+정점 속성을 하나 더 추가하고 VBO를 업데이트 해버렸기 때문에 또다시 정점 속성 포인터를 다시 만들어야됩니다;
+VBO는 아마 이렇겠네요
+
+<img src="/assets/opengl/vertex_attribute_pointer_interleaved.png" alt="글이너무길어요살려주세요">
+
+VBO 구조를 봤으니까 <span class="glvk-func-tag">glVertexAttribPointer</span>를 써서 정점 속성을 업데이트 해줍니다.
+
+```cpp
+// 위치 속성
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+glEnableVertexAttribArray(0);
+// 색깔 속성
+glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+glEnableVertexAttribArray(1);
+```
+
+glVertexAttribPointer 함수의 인자 몇개는 매우 **이지**합니다. ~~(비교적으로)~~
+
+```cpp
+glVertexAttribPointer(
+    0,
+    3,
+    GL_FLOAT,
+    GL_FALSE,
+    6 * sizeof(float),
+    (void*)0
+);
+```
+
+이걸 볼까요?
+
+첫번째 0은 정점 속성의 인덱스입니다!
+
+두번째 3은 정점 속성 하나를 구성하는 컴포넌트의 개수이고요,
+
+세번째 인자인 GL_FLOAT는 데이터의 자료형, 타입입니다. x, y, z가 전부 Float라는거에요.
+
+네번째 인자 GL_FALSE는 정규화 여부입니다. GL_TRUE로 설정하면 정수형 데이터를 0~1 또는 -1~1 사이의 정규화된 소수점으로 변환하지만, 이미 GL_FLOAT을 사용하고 있으므로 변환이 필요 없어 GL_FALSE로 지정합니다.
+
+다섯번째 인자인 6 * sizeof(float)는 스트라이드(보폭)라고 하며, 연속적으로 나열돼있는 정점 속성 사이의 간격(바이트단위)를 나타냅니다. (데이터 배열에서 위치 벡터의 다음 x 성분 같은 속성을 얻으려면 위치 값 3개 + 색상 값 3개, 총 **6개의 float만큼** 오른쪽으로 이동해야됩니다. 따라서 스트라이드 값은 float 크기의 6배인 바이트 단위(24바이트)가 됩니다)
+
+여섯번째 인자인 (void*)0은 버퍼 내에서 이 속성이 시작되는 오프셋입니다. 각 정점에 대해 위치 정점 속성이 먼저 오므로 오프셋을 0으로 설정합니다. 색상 속성은 위치 데이터 다음에 시작되므로 오프셋은 3 * sizeof(float) 바이트, 12바이트입니다.
+
+실행해보면 사진처럼 나올겁니다.
+
+<img src="/assets/opengl/shaders3.png" alt="끝이보인다">
+
+모르겠으면 [전체 코드](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/3.2.shaders_interpolation/shaders_interpolation.cpp) 보세요
+
+사진이 우리가 기대한 예쁘고 엄청나고 위대(?)하지 못한 이유는, 방대한 색상 팔레트 대신 단 3개의 색깔만 썼기 때문입니다. 이건 프래그먼트 셰이더의 프래그먼트 보간(fragment interpolation)이라는 기능 때문인데, 삼각형을 렌더링 할때 레스터화 단계에선 처음에 지정한 정점 수보다 훨씬 많은 정점이 만들어집니다. 그러면 레스터라이저는 삼각형 모양에서 각 프래그먼트의 위치를 결정하고요.
+
+이런 위치를 기반으로 프래그먼트 쉐이더의 모든 입력 변수가 보간됩니다. 예를 들면 위쪽 점이 녹색이고 아래쪽 점이 파랑인 선이 있을때, 프래그먼트 세이더가 선의 약 70% 지점에 있는 프래그먼트에서 실행되면 그 프래그먼트의 색상 입력 속성은 녹색과 파란색의 선형 조합, 정확히는 파랑 30: 녹색 70이 됩니다.
+
+이 모르겠는 삼각형에서 일어난 일이 이겁니다. 정점이 3개니까 색깔도 3개, 삼각형의 픽셀들을 보면 대충 5만개 정도의 프래그먼트가 포함되어 있을것으로 보이는데 프래그먼트 쉐이더가 지맘대로 보간을 한겁니다. 자세히보면 모든게 이해가 될거고요. 빨강 -> 파랑이 될수록 보라색을 거쳐 다시 파랑이 됩니다. 프래그먼트 보간은 프래그먼트 셰이더의 모든 입력 속성에 적용됩니다.
+
+(작성중)
