@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://glvk.pages.dev/</loc>
+    <priority>1.0</priority>
+  </url>
+<url>
+  <loc>https://glvk.pages.dev/#/README</loc>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://glvk.pages.dev/#/_navbar</loc>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://glvk.pages.dev/#/_sidebar</loc>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://glvk.pages.dev/#/credits</loc>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://glvk.pages.dev/#/opengl/README</loc>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://glvk.pages.dev/#/opengl/create-window</loc>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://glvk.pages.dev/#/opengl/hello-triangle</loc>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://glvk.pages.dev/#/opengl/hello-window</loc>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://glvk.pages.dev/#/opengl/shaders</loc>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://glvk.pages.dev/#/opengl/what-is-opengl</loc>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://glvk.pages.dev/#/vulkan/README</loc>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://glvk.pages.dev/#/webgl/README</loc>
+  <priority>0.8</priority>
+</url>
+</urlset>
