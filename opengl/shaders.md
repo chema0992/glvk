@@ -342,4 +342,180 @@ glVertexAttribPointer(
 
 이 모르겠는 삼각형에서 일어난 일이 이겁니다. 정점이 3개니까 색깔도 3개, 삼각형의 픽셀들을 보면 대충 5만개 정도의 프래그먼트가 포함되어 있을것으로 보이는데 프래그먼트 쉐이더가 지맘대로 보간을 한겁니다. 자세히보면 모든게 이해가 될거고요. 빨강 -> 파랑이 될수록 보라색을 거쳐 다시 파랑이 됩니다. 프래그먼트 보간은 프래그먼트 셰이더의 모든 입력 속성에 적용됩니다.
 
-(작성중)
+## 우리가 만든 쉐이더 클래스
+
+아주 지옥 같은 쉐이더 작성과 컴파일은 더 이상 꼴보기도 싫습니다.
+쉐이더의 대한 마지막 단계로, 디스크에서 쉐이더를 읽어 컴파일이랑 링크를 하고 오류를 검사하며 **사용하기 쉬운** 쉐이더 클래스를 만들어 인생의 질을 높입시다.
+지금까지 배운 지식들을 유용한(?) 객체로 모듈화 할 아이디어는 덤입니다.
+
+헤더 파일에 쉐이더 클래스 전체를 생성하겠습니다. 필요한 헤더 파일을 넣고 클래스 구조를 정의하세요
+
+```cpp
+#ifndef SHADER_H
+#define SHADER_H
+
+#include <glad/glad.h> // OpenGL의 모든 헤더를 받을 수 있어용
+  
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+  
+
+class Shader
+{
+public:
+    // 프로그램의 id
+    unsigned int ID;
+  
+    // 생성자가 쉐이더를 읽고 생성합니다.
+    Shader(const char* vertexPath, const char* fragmentPath);
+    // 쉐이더를 쓰고 활성화합니다.
+    void use();
+    // 유니폼 관련 유틸리티 함수들
+    void setBool(const std::string &name, bool value) const;  
+    void setInt(const std::string &name, int value) const;   
+    void setFloat(const std::string &name, float value) const;
+};
+  
+#endif
+```
+
+> tip! 여기서 C++ 문법이 나옵니다. 바로 전처리 지시문(preprocessor directives)인데요, 이 코드들은 컴파일러에게 해당 헤더 파일이 아직 포함되지 않은 경우에만 포함하고 컴파일하도록 명령하는 코드입니다. 여러 파일에서 쉐이더 헤더를 포함하고 있어도 마찬가지입니다. 이러면 링크 충돌 방지를 할 수 있고요.
+
+쉐이더 클래스는 쉐이더 프로그램의 ID를 저장합니다.
+생성자는 버텍스 쉐이더와 프래그먼트 쉐이더의 소스 코드 파일 경로를 인자로 받는데, 이 경로는 텍스트 파일로 디스크에 저장할 수 있습니다. 편하기 위해 유틸리티 함수도 몇개 있고요.
+use 함수는 쉐이더 프로그램을 활성화 하고, set어쩌구 함수들은 유니폼 변수의 위치를 조회하고 값을 설정합니다.
+
+### 파일 읽기
+
+C++의 파일 스트림을 사용해서 파일을 여러 string 개체로 읽습니다.
+
+```cpp
+Shader(const char* vertexPath, const char* fragmentPath)
+{
+    // 1. 파일의 주소에서 버텍스/프래그먼트 쉐이더의 소스 코드를 가져옵니다.
+    std::string vertexCode;
+    std::string fragmentCode;
+    std::ifstream vShaderFile;
+    std::ifstream fShaderFile;
+    // ifstream 객체가 예외를 발생시킬 수 있게 보장합니다.
+    vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+    fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+    try 
+    {
+        // 파일 열기
+        vShaderFile.open(vertexPath);
+        fShaderFile.open(fragmentPath);
+        std::stringstream vShaderStream, fShaderStream;
+        // 파일 버퍼의 내용을 스트림으로 읽어들입니다.
+        vShaderStream << vShaderFile.rdbuf();
+        fShaderStream << fShaderFile.rdbuf();
+        // 파일 핸들러를 닫습니다.
+        vShaderFile.close();
+        fShaderFile.close();
+        // 스트림을 문자열로 변환합니다.
+        vertexCode   = vShaderStream.str();
+        fragmentCode = fShaderStream.str();		
+    }
+    catch(std::ifstream::failure e)
+    {
+        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+    }
+    const char* vShaderCode = vertexCode.c_str();
+    const char* fShaderCode = fragmentCode.c_str();
+    [...]
+```
+
+다음으로 쉐이더를 컴파일하고 링크를 해야합니다. 컴파일/링크가 실패했는지 알기 위해 오류를 출력하면 디버깅 할때 엄청 편할겁니다.
+
+```cpp
+// 2. 컴파일 쉐이더
+unsigned int vertex, fragment;
+int success;
+char infoLog[512];
+   
+// 버텍스 쉐이더
+vertex = glCreateShader(GL_VERTEX_SHADER);
+glShaderSource(vertex, 1, &vShaderCode, NULL);
+glCompileShader(vertex);
+// 컴파일 오류가 있으면 출력!
+glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
+if(!success)
+{
+    glGetShaderInfoLog(vertex, 512, NULL, infoLog);
+    std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+};
+  
+// 프래그먼트 쉐이더 (생략)
+[...];
+  
+// 쉐이더 쁘로그램
+ID = glCreateProgram();
+glAttachShader(ID, vertex);
+glAttachShader(ID, fragment);
+glLinkProgram(ID);
+// 링킹 오류가 있으면 출력!!
+glGetProgramiv(ID, GL_LINK_STATUS, &success);
+if(!success)
+{
+    glGetProgramInfoLog(ID, 512, NULL, infoLog);
+    std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+}
+  
+// 쉐이더는 현재 프로그램에 연결되어 있으므로 삭제합니다.
+glDeleteShader(vertex);
+glDeleteShader(fragment);
+```
+
+use 함수는 간단합니다!
+
+```cpp
+void use() 
+{ 
+    glUseProgram(ID);
+}
+```
+
+모든 유니폼 설정 함수도 쉽습니다.
+
+```cpp
+void setBool(const std::string &name, bool value) const
+{         
+    glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value); 
+}
+void setInt(const std::string &name, int value) const
+{ 
+    glUniform1i(glGetUniformLocation(ID, name.c_str()), value); 
+}
+void setFloat(const std::string &name, float value) const
+{ 
+    glUniform1f(glGetUniformLocation(ID, name.c_str()), value); 
+}
+```
+
+쉐이더 클래스가 완성 됐습니다.
+이제 쉽게 쓰면 되는데요?
+
+```cpp
+Shader ourShader("path/to/shaders/shader.vs", "path/to/shaders/shader.fs");
+[...]
+while(...)
+{
+    ourShader.use();
+    ourShader.setFloat("someUniform", 1.0f);
+    DrawStuff();
+}
+```
+
+여기선 버텍스 쉐이더와 프래그먼트 쉐이더 소스 코드를 sharder.vs랑 shader.fs 라는 파일 두개로 저장했습니다. 파일 확장자는 사실 .banana로 하든 .thisisshader로 하든 상관이 없습니다. 하지만 그따구로 지으면 동료가 아주 **좋아 죽겠죠?**
+
+드디어 길고 긴 쉐이더가 끝이 났습니다.
+
+## 연습 문제
+
+마무리 퀴즈!
+
+- 버텍스 쉐이더를 수정해서 삼각형이 거꾸로 보이게 해보세요. (답: https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/3.4.shaders_exercise1/shaders_exercise1.cpp)
+- 유니폼 변수로 수평 오프셋을 정하고, 이 오프셋 값을 사용해서 버텍스 쉐이더에서 삼각형을 오른쪽으로 이동시키세요. (답: https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/3.5.shaders_exercise2/shaders_exercise2.cpp)
+- out 키워드를 사용해서 정점 위치를 프래그먼트 쉐이더로 출력하고, 프래그먼트의 색깔을 이 정점 위치와 같게 설정하세요. (정점 위치 값이 삼각형 전체에 걸쳐 보간되게). 다 했으면 질문에 답해보세요. "삼각형의 왼쪽 아래 변이 검은색인 이유는 무엇일까요?" (답: https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/3.6.shaders_exercise3/shaders_exercise3.cpp)
