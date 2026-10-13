@@ -8,6 +8,7 @@
     - [창 띄우기](/opengl/hello-window.md)
     - [삼각형 만들기](/opengl/hello-triangle.md)
     - [쉐이더](/opengl/shaders.md)
+    - [텍스처](/opengl/textures.md)
 
 - **Vulkan**
   - [소개](/vulkan/)
