@@ -4,22 +4,22 @@
 
 오랜만입니다.
 이전 글에서는 컴파일까지만 했었죠?
-이 글에선 창을 띄우는것까지를 목표로 해보겠습니다!
+이 글에선 창을 띄우는 것까지를 목표로 해보겠습니다!
 
-일단 프로젝트 파일에 아래 코드가 담겨진 main.cpp을 만들어주세요.
+일단 프로젝트 파일에 아래 코드가 담긴 main.cpp를 만들어주세요.
 
 ```cpp
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 ```
 
-> tip! 반드시 glad가 먼저 와야합니다. 네, 반드시요.
+> tip! 반드시 glad가 먼저 와야 합니다. 네, 반드시요.
 > GLFW는 GLAD가 제공하는 함수 주소를 찾습니다.
 > 근데 GLAD는 아직 없습니다.
 > 어?? 컴파일러는 결국 오류는 뿜어냅니다.
 
 이제 <span class="glvk-func-tag">main</span> 함수를 만들어주세요.
-이 함수에 GLFW 코드를 넣을겁니다.
+이 함수에 GLFW 코드를 넣을 겁니다.
 
 ```cpp
 int main()
@@ -34,17 +34,17 @@ int main()
 }
 ```
 
-코드를 한 줄씩 해석해볼까요?
+코드를 한 줄씩 해석해 볼까요?
 
 ` int main() { `
 
 이 코드는 main 함수 선언을 말합니다. 반환 타입은 int고, 인자는 없습니다. (void)
-코드에선 main() 하고 다음줄에 '{'가 있는데, main() 옆에 공백을 추가하고 바로 {를 붙여도 상관은 없습니다.
+(코드에선 main() 하고 다음 줄에 '{'가 있는데, main() 옆에 공백을 추가하고 바로 {를 붙여도 상관은 없습니다.)
 
 ` glfwInit(); `
 
-이 코드는 GLFW를 초기화 하는 함수입니다.
-반환값을 가지는데, 성공하면 1, 실패하면 0을 반환합니다.
+이 코드는 GLFW를 초기화하는 함수입니다.
+반환 값을 가지는데, 성공하면 1, 실패하면 0을 반환합니다.
 그래서 아래 코드처럼 예외를 넣을 수 있습니다.
 
 ```cpp
@@ -54,7 +54,7 @@ if (!glfwInit()) {
 }
 ```
 
-(!를 붙이면 NOT이라는겁니다. 0의 NOT은 1이므로 if 블록 안은 초기화를 실패했을때 로직이겠죠?)
+(!를 붙이면 NOT이라는 겁니다. 0의 NOT은 1이므로 if 블록 안은 초기화를 실패했을 때 로직이겠죠?)
 
 ```cpp
 glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -63,36 +63,36 @@ glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 ```
 
 이 코드는 glfwWindowHint 함수입니다.
-set이 아니라 hint인 이유는.. 창 만드는걸 glfw가 하잖아요?
-그래서 hint인겁니다. 참고하라고 말하는거에요.
+set이 아니라 hint인 이유는, 드라이버가 대부분을 해주기 때문입니다.
+그러기에 set이란 이름보다 hint가 더 자연스럽습니다.
 
 ` glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); ` 이거는 MAJOR 버전을 3으로 설정,
 
 ` glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); ` 이건 MINOR 버전을 3으로 설정하라는 힌트입니다.
-쉽게 생각하면 그냥 버전을 3.3으로 한다는거에요.
+쉽게 생각하면 그냥 버전을 3.3으로 한다는 거예요.
 4.3으로 하고 싶으면 MAJOR을 4로 변경하면 됩니다.
 
-` glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); ` 이건 영어를 읽으실줄 안다면 대충 짐작이 되실텐데요?
-이건 프로필을 CORE로 설정하겠다는겁니다.
+` glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); `
+이 코드는 프로필을 CORE로 설정하겠다는 겁니다. (이전 글에서 Core 프로필을 쓴다고 말했죠?)
 
-이제 glfwWindowHint();가 뭔 일을 하는지 대충 알아채셨을겁니다.
+이제 glfwWindowHint();가 뭔 일을 하는지 대충 알아채셨을 겁니다.
 
-1. 첫번째 인자는 설정하려는거
-2. 두번째 인자는 설정할 값
+1. 첫 번째 인자는 설정하려는 대상
+2. 두 번째 인자는 설정할 값
 
-설정하려는거를 모두 알고 싶으시면 [GLFW 윈도우 힌트 문서](https://www.glfw.org/docs/latest/window.html#window_hints)에 다 나와 있습니다. (근데 귀찮으시면 안 읽어도 돼요)
+설정하려는 대상을 모두 알고 싶으시면 [GLFW 윈도우 힌트 문서](https://www.glfw.org/docs/latest/window.html#window_hints)에 다 나와 있습니다. (근데 귀찮으시면 안 읽어도 돼요.)
 
-` //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); ` 이 주석은 만약 실행하려는 OS가 MacOS일걸 대비해 LearnOpenGL 저자가 써놓은 코드입니다. 윈도우에서는 필요가 없어서 주석인거에요. 만약 자기가 MacOS다? 그러면 // 지우면 바로 됩니다.
+` //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); ` 이 주석은 만약 실행하려는 OS가 MacOS일걸 대비해 LearnOpenGL 저자가 써놓은 코드입니다. 윈도우에서는 필요가 없어서 필요할때만 //를 지우라고 주석인 거예요. 만약 자기가 MacOS다? 그러면 // 지우면 바로 됩니다.
 
 만약 방금 코드들을 컴파일하고 실행했을 때 undefined reference errors가 나면..
-GLFW 라이브러리가 제대로 링크 되지 않았다는 의미입니다. [이전 문서](opengl/create-window.md)로 돌아가세요! ㅋㅋ
+GLFW 라이브러리가 제대로 링크되지 않았다는 의미입니다. [이전 문서](opengl/create-window.md)로 돌아가세요!
 
-> tip! 자신의 글카 (그래픽 카드)가 OpenGL 3.3을 지원하는지 확인하세요! (내장 그래픽 카드라도 되면 상관 없음)
-> 이 문서를 읽고 있는 정도의 PC라면 대부분 문제 없겠지만,
-> 만약 자기 컴퓨터가 막 15년도 넘고 그랬다! 그러면 Linux에서는 glxinfo 명령어를, Windows에서는 OpenGL Extension Viewer를 사용해서 확인해보세요.
-> 지원되는 버전이 OpenGL 3.3 보다 낮고 그래픽 드라이버 업데이트 해도 똑같다? 유감이네요. 실습을 진행할 수 없습니다 ㅜㅜ 이왕이면 새로 사실때 RTX 5060 TI를 추천드려요. (만약 2027년에 이걸 읽고 계신다면 더 좋은게 나왔을지도 모르겠네요)
+> tip! 자신의 글카 (그래픽 카드)가 OpenGL 3.3을 지원하는지 확인하세요! (내장 그래픽 카드라도 되면 상관없음)
+> 이 문서를 읽고 있는 정도의 PC라면 대부분 문제없겠지만,
+> 만약 자기 컴퓨터가 막 15년도 넘고 그랬다! 그러면 Linux에서는 glxinfo 명령어를, Windows에서는 OpenGL Extension Viewer를 사용해서 확인해 보세요.
+> 지원되는 버전이 OpenGL 3.3 보다 낮고 그래픽 드라이버 업데이트 해도 똑같다? 유감이네요. 실습을 진행할 수 없습니다. ㅜㅜ 이왕이면 새로 사실때 RTX 5060 TI를 추천드려요. (만약 2027년에 이걸 읽고 계신다면 더 좋은게 나왔을지도 모르겠네요.)
 
-다음으로 윈도우 객체를 생성해야합니다.
+다음으로 윈도우 객체를 생성해야 합니다.
 
 ```cpp
 GLFWwindow* window = glfwCreateWindow(
@@ -116,7 +116,7 @@ glfwMakeContextCurrent(window);
 <span class="glvk-func-tag">glfwCreateWindow</span> 함수는 창 크기와 이름 같은 인자를 받으면 window 객체를 생성합니다.
 window는 그 객체의 주소를 갖고 있는 포인터고요.
 
-` glfwMakeContextCurrent(window); `는 어떤 창을 메인으로 할지 정하는거라고 생각하시면 됩니다.
+` glfwMakeContextCurrent(window); `는 어떤 창을 메인으로 할지 정하는 거라고 생각하시면 됩니다.
 
 ```cpp
 GLFWwindow* window1 = glfwCreateWindow(800, 600, "Window 1", NULL, NULL);
@@ -140,7 +140,7 @@ if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 ```
 
 한마디로 "GLAD를 불러오는 데 실패했다면..."입니다.
-GLFW는 glfwGetProcAddress라는 함수를 제공하고, 이 함수는 컴파일 중인 운영체제에 맞는 적절한 함수를 자동으로 정의해 줍니다
+GLFW는 glfwGetProcAddress라는 함수를 제공하고, 이 함수는 컴파일 중인 운영체제에 맞는 적절한 함수를 자동으로 정의해 줍니다.
 
 ## 뷰포트
 
@@ -152,12 +152,12 @@ GLFW는 glfwGetProcAddress라는 함수를 제공하고, 이 함수는 컴파일
 glViewport(0, 0, 800, 600);
 ```
 
-첫번째, 두번째 인자는 **창의 왼쪽 아래 모서리 위치를 설정**합니다.
-세번째, 네번째 인자는 창의 가로와 세로 넓이입니다.
+첫 번째, 두 번째 인자는 **창의 왼쪽 아래 모서리 위치를 설정**합니다.
+세 번째, 네 번째 인자는 창의 가로와 세로 넓이입니다.
 
 뷰포트 크기를 반드시 GLFW의 크기만큼 하지 않아도 오류가 안 나는데요,
-그럴경우엔 뭘 그렸을때 그 영역에만 표시됩니다.
-그러면 남는 공간엔 다른걸 넣을수도 있겠죠?
+그럴땐 뭘 그렸을 때 그 영역에만 표시됩니다.
+그러면 남는 공간엔 다른 걸 넣을 수도 있겠죠?
 
 > tip! 내부적으로 OpenGL은 **glViewport**를 통해 처리된 2D 좌표를 화면 좌표로 변환합니다.
 > 예를 들어, 처리된 위치 (-0.5, 0.5)는 최종적으로 화면 좌표 (200, 450)로 매핑됩니다.
@@ -194,8 +194,8 @@ OpenGL에서는 다양한 콜백 함수를 설정해서 사용자 정의 함수�
 
 웅장합니다. 엔진 준비라니.
 
-기껏 창을 띄워서 그렸는데 바로 종료되면 엄청 화날겁니다. 그래서 프로그램이 종료되라고 명령을 받기 전까지 계속해서 화면을 보여주고 사용자 입력을 받아야 합니다. 그로인해 while loop를 만들어야 하는데, 이걸 render loop(한국어로 할게요)라고 부릅니다.
-(python에서 tkinter로 창을 띄울때 ` window.mainloop() `를 넣는 이유도 이거 때문입니다.)
+기껏 창을 띄워서 그렸는데 바로 종료되면 엄청나게 화날 겁니다. 그래서 프로그램이 종료되라고 명령을 받기 전까지 계속해서 화면을 보여주고 사용자 입력을 받아야 합니다. 그로 인해 while loop를 만들어야 하는데, 이걸 render loop(한국어로 할게요)라고 부릅니다.
+(python에서 tkinter로 창을 띄울 때 ` window.mainloop() `를 넣는 이유도 이거 때문입니다.)
 아래 코드는 간단한 render loop에 대한 예시입니다.
 
 ```cpp
@@ -210,28 +210,24 @@ while(!glfwWindowShouldClose(window))
 
 <span class="glvk-func-tag">glfwPollEvents</span> 함수는 키보드 입력이나 마우스 움직임과 같은 이벤트가 발생했는지 확인하고, 윈도우(창) 상태를 업데이트한 후, 우리가 등록한 콜백 함수들을 호출합니다.
 
-> tip! glfwPollEvents();는 'Poll' 방식입니다. 그 말인 즉슨, 루프 한 번 돌때마다 계속 "이벤트 있니? 이벤트 있니? 이벤트 있니?" 하는거란 말입니다. (자세힌 확인하고 다음 코드 실행인데, 어차피 코드엔 창 띄우기만 있으니 같은 말이죠)
-> 딱봐도 너무 비효율적이죠? 그래서 ` glfwWaitEvents(); ` 라는게 있습니다!
-> glfwWaitEvents();는 glfwPollEvents();와는 다르게 그냥 그 스레드가 이벤트를 받을때까지 잠들게 하는겁니다.
-> 하지만 용도에 맞게 써야돼요. 실시간성이 필요한 3D 게임 등은 glfwPollEvents();를, 문서 편집기나 디자인 툴처럼 이벤트가 없을땐 멈춰도 될땐 glfwWaitEvents();를.
+> tip! glfwPollEvents();는 'Poll' 방식입니다. 그 말인즉슨, 루프 한 번 돌 때마다 계속 "이벤트 있니? 이벤트 있니? 이벤트 있니?" 하는거라는 겁니다. (자세힌 확인하고 다음 코드 실행인데, 어차피 코드엔 창 띄우기만 있으니 같은 말이죠)
+> 딱 봐도 너무 비효율적이죠? 그래서 ` glfwWaitEvents(); ` 라는 게 있습니다!
+> glfwWaitEvents();는 glfwPollEvents();와는 다르게 그냥 그 스레드가 이벤트를 받을 때까지 잠들게 하는 겁니다.
+> 하지만 용도에 맞게 써야 해요. 실시간성이 필요한 3D 게임 등은 glfwPollEvents();를, 문서 편집기나 디자인 도구처럼 이벤트가 없고 멈춰도 될 땐 glfwWaitEvents();를.
 
 <span class="glvk-func-tag">glfwSwapBuffers</span> 함수는 현재 렌더링 루프 동안 사용된 컬러 버퍼(픽셀마다 색상 정보를 담고 있는 2차원 버퍼)를 화면에 출력용으로 전환합니다. 즉, 백 버퍼와 프론트 버퍼를 교체하여 렌더링 결과를 화면에 표시하게 됩니다.
 
-> tip! 뭔 말인가 싶으실텐데 GPU의 작동 원리를 알면 아실겁니다. 전 엔지니어가 아니므로 간략히 설명하자면, GPU는 모니터 주사율과 맞는다는 보장이 없기에 화면이 깨지는 등 현상이 일어날 수 있는데, 그걸 방지하기 위해 도화지를 2개를 둬서 뒤에서 그리고 화면을 교체하는 방식입니다.
-
 ### 이중 버퍼
 
-(아니 이런 방금 tip에 말했는데 번역하다보니 바로 뒤에 나왔네요. 에너지 소모를 줄이기 위해 원본으로 하겠습니다.)
-
-애플리케이션이 단일 버퍼에 이미지를 그릴 때, 결과 이미지에 깜빡임이 발생할 수 있습니다.
-이는 최종 출력 이미지가 즉시 그려지는 것이 아니라 픽셀 단위로,
-일반적으로 왼쪽에서 오른쪽, 위에서 아래로 순차적으로 그려지기 때문입니다.
+프로그램이 단일 버퍼에 이미지를 그리면 이미지가 깜빡거릴 수 있습니다.
+이건 최종 출력 이미지가 즉시 그려지는 것이 아니라 픽셀 단위로,
+왼쪽에서 오른쪽, 위에서 아래로 순차적으로 그려지기 때문인데요.
 
 렌더링이 진행되는 동안 이미지가 사용자에게 실시간으로 표시되지 않으므로, 결과물에 화면 깜박임 같은 문제(아티팩트)가 발생할 수 있습니다.
 
-이러한 문제를 해결하기 위해 윈도우 기반 애플리케이션은 이중 버퍼 렌더링 방식을 사용합니다. 프런트 버퍼에는 화면에 표시되는 최종 출력 이미지가 저장되고, 모든 렌더링 명령은 백 버퍼에 그려집니다. 모든 렌더링 명령이 완료되면 백 버퍼의 이미지를 프런트 버퍼로 전환하여 이미지가 렌더링되는 동안에도 화면에 표시될 수 있도록 함으로써 앞서 언급한 아티팩트를 제거합니다.
+그래서 이런 문제를 해결하기 위해 창 기반 프로그램은 이중 버퍼 렌더링 방식을 사용합니다. 프론트 버퍼에는 화면에 표시되는 최종 출력 이미지가 저장되고, 모든 렌더링 명령은 백 버퍼에 그려집니다. 모든 렌더링 명령이 완료되면 백 버퍼의 이미지를 프론트 버퍼로 전환하여 이미지가 렌더링되는 동안에도 화면에 그려지게 해서 아티팩트를 개선합니다.
 
-## 마무리할때
+## 마무리할 때
 
 렌더 루프가 끝나면, GLFW에서 할당된 모든 리소스를 적절히 정리 및 삭제해 주는 것이 좋겠죠? 그래서 main 함수의 마지막에 ` glfwTerminate ` 함수를 호출하여 리소스를 정리할 수 있습니다.
 
@@ -241,16 +237,16 @@ return 0;
 ```
 
 그러면 모든 리소스가 정리되고 프로그램이 정상적으로 종료됩니다. 이제 main.cpp을 컴파일해 보세요.
-문제가 없다면 아래 사진처럼 나올겁니다.
+문제가 없다면 아래 사진처럼 나올 겁니다.
 
 <img src="/assets/opengl/hellowindow.png" alt="자료1">
 
-이 단순하고 지루하고 이제까지의 과정이 허탈하게 느껴질 정도로 쓸모없게 생긴 검은 화면이 나왔다면.. **퍼펙트!!** 잘 하신겁니다!
-(만약 아주 재미있고, 깜빡이며, 해결해야할 일이 더 생겼다면.. 유감이네요. 더 읽어보세요) 원하는 화면을 얻지 못했거나 모든 요소가 어떻게 연결되는지 이해가 안 된다면 [전체 코드](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/1.2.hello_window_clear/hello_window_clear.cpp)를 확인하세요.
+이 단순하고 지루하고 이제까지의 과정이 허탈하게 느껴질 정도로 쓸모없게 생긴 검은 화면이 나왔다면.. **퍼펙트!!** 잘하신 겁니다!
+(만약 아주 재미있고, 깜빡이며, 해결해야할 일이 더 생겼다면.. 유감이네요. 더 읽어보세요.) 원하는 화면을 얻지 못했거나 모든 요소가 어떻게 연결되는지 이해가 안 된다면 [전체 코드](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/1.2.hello_window_clear/hello_window_clear.cpp)를 확인하세요.
 
 ## 입력
 
-GLFW에서 입력 제어 기능도 구현하고 싶다면, GLFW의 여러 입력 함수를 이용하면 됩니다. 창 이름과 키를 인자로 받는 GLFW의 <span class="glvk-func-tag">glfwGetKey</span> 함수를 사용할 겁니다. 이 함수는 현재 그 키가 눌려 있는지 여부를 반환합니다. 모든 입력 관련 코드를 체계적으로 관리하기 위해 processInput 함수를 만들겠습니다.
+GLFW에서 입력 제어 기능도 구현하고 싶다면, GLFW의 여러 입력 함수를 이용하면 됩니다. 창 이름과 키를 인자로 받는 GLFW의 <span class="glvk-func-tag">glfwGetKey</span> 함수를 사용할 겁니다. 이 함수는 현재 그 키가 눌려 있는지를 반환합니다. 모든 입력 관련 코드를 체계적으로 관리하기 위해 processInput 함수를 만들겠습니다.
 
 ```cpp
 void processInput(GLFWwindow *window)
@@ -264,7 +260,7 @@ void processInput(GLFWwindow *window)
 
 만약 유저가 escape key를 누르면 <span class="glvk-func-tag">glfwSetwindowShouldClose</span>를 이용해 <span class="glvk-var-tag">WindowShouldClose</span> 를 **true**로 설정해서 닫습니다.
 
-이제 렌더 루프가 돌아갈때 조건이 만족하지 못하게 되고 창이 닫힙니다.
+이제 렌더 루프가 돌아갈 때 조건이 만족하지 못하게 되고 창이 닫힙니다.
 
 그래서 아래 코드처럼 각 반복마다 processInput을 호출하게 만들면 됩니다.
 
@@ -283,16 +279,14 @@ while (!glfwWindowShouldClose(window))
 
 ## 렌더링
 
-~~*아니 진짜 언제 끝나는거야*~~
-
 렌더링 명령은 모두 렌더링 루프 안에 넣어야 합니다. 당연하죠? 렌더링 루프 밖에다가 두면 영영 실행되지 못할겁니다.
 그래서 코드는 아래처럼 생겼습니다. (예시)
 
 ```cpp
-// render loop
+// 렌더 루프
 while(!glfwWindowShouldClose(window))
 {
-    // 키 눌렸는지 감지하는거
+    // 키 눌렸는지 감지하는 함수
     processInput(window);
 
     // 멋진 렌더링 명령들
@@ -305,29 +299,29 @@ while(!glfwWindowShouldClose(window))
 ```
 
 제대로 작동하는지 테스트를 해봐야겠죠?
-그래서 원하는 색상으로 바꿀려고 합니다. 하지만 뭘 그리기 전에 먼저 화면을 지워야합니다. 그렇지 않으면 이전 프레임이 계속 남아 있게 될겁니다. (잔상이라고 부르는데, 이걸 좋아하는 사람은 몇 없을겁니다)
+그래서 원하는 색상으로 바꾸려고 합니다. 하지만 뭘 그리기 전에 먼저 화면을 지워야 합니다. 그렇지 않으면 이전 프레임이 계속 남아 있게 될 겁니다. (잔상이라고 부르는데, 이걸 좋아하는 사람은 몇 없을 겁니다)
 
-<span class="glvk-func-tag">glClear</span>를 써서 지울수 있고, 인자로는 아래 3가지 비트를 넣을 수 있습니다.
+<span class="glvk-func-tag">glClear</span>를 써서 지울 수 있고, 인자로는 아래 3가지 비트를 넣을 수 있습니다.
 
 1. GL_COLOR_BUFFER_BIT (색상 버퍼)
 2. GL_DEPTH_BUFFER_BIT (깊이 버퍼)
 3. GL_STENCIL_BUFFER_BIT (스탠실 버퍼)
 
-우리는 지금 색깔만 신경쓰면 되니까 색상 버퍼만 초기화 하면(clear) 하면 됩니다.
+우리는 지금 색깔만 신경 쓰면 되니까 색상 버퍼만 초기화하면(clear) 하면 됩니다.
 
 ```cpp
 glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 glClear(GL_COLOR_BUFFER_BIT);
 ```
 
-(와 너무 감동적이에요. 색깔이 바꼈어요)
+(와 너무 감동적이에요. 색깔이 바뀌었어요)
 
-glClearColor는 바로 그 색깔로 클리어(초기화) 한다기보단, 그냥 초기화 할때 무슨 색깔로 초기화 할지를 정하는겁니다.
+glClearColor는 바로 그 색깔로 클리어(초기화)한다기보단, 그냥 초기화할 때 무슨 색깔로 초기화할지를 정하는 겁니다.
 glClear를 호출하면 glClearColor로 설정한 색깔로 지워지고요.
 
-컴파일해보면 어두운 녹색창이 나올겁니다!
+컴파일해 보면 어두운 녹색 창이 나올 겁니다!
 
-> tip! 예전 글을 기억하신다면 glClearColor 함수는 상태 설정 함수고 glClear 함수는 상태를 가져와서 사용하는 state using 함수란 걸 알 수 있을겁니다.
+> tip! 예전 글을 기억하신다면 glClearColor 함수는 상태 설정 함수고 glClear 함수는 상태를 가져와서 사용하는 state using 함수란 걸 알 수 있을 겁니다.
 
 <img src="/assets/opengl/hellowindow2.png" alt="자료2">
 
@@ -338,7 +332,7 @@ glClear를 호출하면 glClearColor로 설정한 색깔로 지워지고요.
 ## 잠깐
 
 이대로 끝내지 마세요!
-전체 코드에서 ` glfwPollEvents(); ` 부분을 ` glfwWaitEvents(); `로 바꾸고 실행해보세요.
+전체 코드에서 ` glfwPollEvents(); ` 부분을 ` glfwWaitEvents(); `로 바꾸고 실행해 보세요.
 그러면.. 축하합니다! 당신의 프로젝트 최초로 최적화를 시도했습니다.
 
 ---
