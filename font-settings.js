@@ -174,7 +174,7 @@
         clearCustomFont();
 
         if (!PRESETS[name]) {
-            name = "A2z";
+            name = "paperlogy";
         }
 
         ROOT.style.setProperty(
@@ -289,8 +289,8 @@
                     </label>
 
                     <select id="glvk-font-mode">
-                        <option value="A2z">
-                            A2z
+                        <option value="paperlogy">
+                            Paperlogy
                         </option>
 
                         <option value="system">
@@ -411,13 +411,13 @@
             } catch (error) {
                 console.error("[GLVK Font]", error);
 
-                applyPreset("A2z");
+                applyPreset("paperlogy");
 
-                mode.value = "A2z";
+                mode.value = "paperlogy";
                 fields.hidden = true;
 
                 status.textContent =
-                    `적용 실패: ${error.message} A2z로 복구했어.`;
+                    `적용 실패: ${error.message} Paperlogy로 복구했어.`;
             }
         });
 
@@ -450,19 +450,19 @@
             } catch (error) {
                 console.error("[GLVK Font]", error);
 
-                applyPreset("A2z");
+                applyPreset("paperlogy");
 
-                ui.mode.value = "A2z";
+                ui.mode.value = "paperlogy";
                 ui.fields.hidden = true;
 
                 ui.status.textContent =
-                    "저장된 폰트를 불러오지 못했어. A2z로 복구했어.";
+                    "저장된 폰트를 불러오지 못했어. Paperlogy로 복구했어.";
             }
 
         } else {
             const preset = saved?.preset === "system"
                 ? "system"
-                : "A2z";
+                : "paperlogy";
 
             applyPreset(preset);
 
