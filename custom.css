@@ -108,7 +108,7 @@
 }
 
 .markdown-section {
-    font-family: 'Paperozi', sans-serif;
+    font-family: var(--glvk-font-family) !important;
 }
 
 /* 코드 글자 크기 */
@@ -164,4 +164,149 @@
 /* Navbar */
 .app-nav {
     padding-right: 30px;
+}
+
+/* GLVK Font Settings */
+
+:root {
+    --glvk-font-family: 'Paperozi', sans-serif;
+}
+
+/* 사이트 기본 글꼴 */
+body,
+.markdown-section,
+.sidebar,
+.sidebar-nav,
+.app-nav,
+.app-name-link {
+    font-family: var(--glvk-font-family) !important;
+}
+
+/* 코드 폰트는 별도로 유지 */
+.markdown-section pre code,
+.markdown-section code[class*="language-"],
+.markdown-section code:not([class*="language-"]) {
+    font-family: 'D2Coding', 'JetBrains Mono', Consolas, monospace !important;
+}
+
+/* 폰트 설정 버튼 */
+#glvk-font-toggle {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 99999;
+
+    width: 48px;
+    height: 48px;
+
+    border: 1px solid #ccc;
+    border-radius: 50%;
+
+    background: #fff;
+    color: #222;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    cursor: pointer;
+    box-shadow: 0 3px 12px #0002;
+}
+
+/* 설정 패널 */
+#glvk-font-panel {
+    position: fixed;
+    right: 24px;
+    bottom: 84px;
+    z-index: 99999;
+
+    width: min(340px, calc(100vw - 32px));
+    box-sizing: border-box;
+
+    padding: 20px;
+
+    background: #fff;
+    color: #222;
+
+    border: 1px solid #ddd;
+    border-radius: 12px;
+
+    box-shadow: 0 5px 25px #0003;
+}
+
+#glvk-font-panel[hidden] {
+    display: none !important;
+}
+
+#glvk-font-panel .glvk-font-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+#glvk-font-panel .glvk-font-header strong {
+    font-size: 18px;
+}
+
+#glvk-font-panel label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#glvk-font-panel input,
+#glvk-font-panel select {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 10px;
+
+    border: 1px solid #ccc;
+    border-radius: 7px;
+
+    background: #fff;
+    color: #222;
+
+    font-size: 14px;
+}
+
+#glvk-font-panel button {
+    cursor: pointer;
+}
+
+#glvk-font-panel .glvk-font-apply {
+    width: 100%;
+    margin-top: 16px;
+    padding: 10px;
+
+    border: none;
+    border-radius: 7px;
+
+    background: #e9ca42;
+    color: #222;
+
+    font-weight: 700;
+}
+
+#glvk-font-panel .glvk-font-close {
+    border: none;
+    background: none;
+    color: inherit;
+    font-size: 20px;
+}
+
+#glvk-font-status {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #777;
+    line-height: 1.5;
+}
+
+#glvk-font-panel small {
+    display: block;
+    margin-top: 6px;
+    color: #777;
+    font-size: 11px;
 }
