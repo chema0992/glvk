@@ -18,6 +18,13 @@ GLVK는 오픈소스 및 오픈 라이선스 그래픽스 강좌를 기반으로
   - 원본 사이트: [vulkan-tutorial.com](https://vulkan-tutorial.com/)
   - 라이선스: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 
+## 폰트 출처
+
+기본 폰트로 에이투지체를 선택하였습니다.
+링크: https://freesentation.blog/a2z
+
 ---
 
 본 사이트의 번역물은 비영리 목적으로 공유되며, 원본 저작권은 각 원작자에게 있습니다. 각 문서의 라이선스는 원본 라이선스 정책을 따릅니다.
+
+(개발 과정 중 AI를 사용하였습니다.)

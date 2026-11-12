@@ -1,16 +1,17 @@
-
 (() => {
-    const STORAGE_KEY = "glvk-font-settings-v1";
+    "use strict";
+
+    const STORAGE_KEY = "glvk-font-settings-v2";
+    const MAX_CSS_LENGTH = 30000;
+
+    const ROOT = document.documentElement;
 
     const PRESETS = {
         paperlogy: '"Paperozi", sans-serif',
         system: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
     };
 
-    let activeStylesheet = null;
-    let activeFontFace = null;
-
-    const root = document.documentElement;
+    let activeStyle = null;
 
     // 설정 불러오기
     function loadSettings() {
@@ -24,51 +25,148 @@
     // 설정 저장
     function saveSettings(settings) {
         try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify(settings)
+            );
+
+            return true;
         } catch (error) {
-            console.error("[GLVK Font] Failed to save settings:", error);
+            console.error("[GLVK Font] Save failed:", error);
+            return false;
         }
     }
 
-    // 기존 Custom 폰트 제거
+    // Custom CSS 제거
     function clearCustomFont() {
-        if (activeStylesheet) {
-            activeStylesheet.remove();
-            activeStylesheet = null;
-        }
-
-        if (activeFontFace) {
-            document.fonts.delete(activeFontFace);
-            activeFontFace = null;
+        if (activeStyle) {
+            activeStyle.remove();
+            activeStyle = null;
         }
     }
 
-    // 폰트 이름을 CSS 문자열로 변환
-    function makeFontStack(name) {
-        const escaped = name
-            .replace(/\\/g, "\\\\")
-            .replace(/"/g, '\\"')
-            .replace(/[\r\n\f]/g, " ");
-
-        return `"${escaped}", sans-serif`;
-    }
-
-    // URL 검증
-    function validateURL(value) {
-        const url = new URL(value);
-
-        if (!["http:", "https:"].includes(url.protocol)) {
-            throw new Error("HTTP 또는 HTTPS URL만 사용할 수 있어.");
-        }
+    // CSS 문자열에서 바깥쪽 따옴표 제거
+    function unquote(value) {
+        value = value.trim();
 
         if (
-            location.protocol === "https:" &&
-            url.protocol !== "https:"
+            (value.startsWith("'") && value.endsWith("'")) ||
+            (value.startsWith('"') && value.endsWith('"'))
         ) {
-            throw new Error("HTTPS URL을 사용해야 해.");
+            return value.slice(1, -1);
         }
 
-        return url.href;
+        return value;
+    }
+
+    // Custom CSS 검증 및 등록
+    function installFontCSS(css) {
+        if (!css.trim()) {
+            throw new Error("CSS를 입력해 줘.");
+        }
+
+        if (css.length > MAX_CSS_LENGTH) {
+            throw new Error("CSS가 너무 길어. 30KB 이하로 입력해 줘.");
+        }
+
+        const style = document.createElement("style");
+
+        style.id = "glvk-custom-font";
+        style.textContent = css;
+
+        document.head.appendChild(style);
+
+        try {
+            const rules = Array.from(
+                style.sheet?.cssRules || []
+            );
+
+            if (rules.length === 0) {
+                throw new Error("유효한 @font-face를 찾을 수 없어.");
+            }
+
+            // @font-face 이외의 CSS 규칙 차단
+            const fontFaceType = window.CSSRule?.FONT_FACE_RULE ?? 5;
+
+            if (rules.some(rule => rule.type !== fontFaceType)) {
+                throw new Error(
+                    "@font-face 규칙만 입력할 수 있어."
+                );
+            }
+
+            const faces = rules;
+
+            // 모든 @font-face가 동일한 Font Family를 사용하는지 확인
+            const families = faces.map(rule =>
+                rule.style.getPropertyValue("font-family").trim()
+            );
+
+            if (families.some(family => !family)) {
+                throw new Error("font-family가 지정되지 않은 규칙이 있어.");
+            }
+
+            const normalizedFamilies = new Set(
+                families.map(family =>
+                    unquote(family).toLowerCase()
+                )
+            );
+
+            if (normalizedFamilies.size !== 1) {
+                throw new Error(
+                    "모든 @font-face의 font-family를 동일하게 지정해 줘."
+                );
+            }
+
+            // src 및 URL 검사
+            for (const face of faces) {
+                const src = face.style.getPropertyValue("src").trim();
+
+                if (!src) {
+                    throw new Error(
+                        "src가 지정되지 않은 @font-face가 있어."
+                    );
+                }
+
+                const matches = [
+                    ...src.matchAll(
+                        /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)]*?))\s*\)/gi
+                    )
+                ];
+
+                if (matches.length === 0) {
+                    throw new Error(
+                        "src에 url(...) 주소가 필요해."
+                    );
+                }
+
+                for (const match of matches) {
+                    const value = (
+                        match[1] ??
+                        match[2] ??
+                        match[3] ??
+                        ""
+                    ).trim();
+
+                    const url = new URL(value, document.baseURI);
+
+                    if (!["http:", "https:"].includes(url.protocol)) {
+                        throw new Error(
+                            "폰트 URL은 HTTP 또는 HTTPS만 사용할 수 있어."
+                        );
+                    }
+                }
+            }
+
+            return {
+                style,
+                faces,
+                family: families[0]
+            };
+
+        } catch (error) {
+            style.remove();
+            throw error;
+        }
     }
 
     // 기본 폰트 적용
@@ -79,7 +177,7 @@
             name = "paperlogy";
         }
 
-        root.style.setProperty(
+        ROOT.style.setProperty(
             "--glvk-font-family",
             PRESETS[name]
         );
@@ -93,71 +191,71 @@
     }
 
     // Custom 폰트 적용
-    async function applyCustom(settings, save = true) {
-        const family = settings.family.trim();
-        const url = validateURL(settings.url);
-
-        if (!family) {
-            throw new Error("Font Family를 입력해 줘.");
-        }
-
+    async function applyCustom(css, save = true) {
         clearCustomFont();
 
-        if (settings.source === "css") {
-            // 외부 CSS 파일 불러오기
-            const link = document.createElement("link");
+        const result = installFontCSS(css);
 
-            link.rel = "stylesheet";
-            link.href = url;
+        activeStyle = result.style;
 
-            activeStylesheet = link;
+        // CSS에서 Font Family 자동 추출
+        ROOT.style.setProperty(
+            "--glvk-font-family",
+            `${result.family}, sans-serif`
+        );
 
-            await new Promise((resolve, reject) => {
-                link.onload = resolve;
-                link.onerror = () => reject(
-                    new Error("폰트 CSS를 불러오지 못했어.")
+        try {
+            // 각 @font-face의 굵기와 스타일에 맞춰 로딩 시도
+            for (const face of result.faces) {
+                const weightValue = face.style
+                    .getPropertyValue("font-weight")
+                    .trim()
+                    .toLowerCase();
+
+                const weightMatch = weightValue.match(
+                    /\b(100|200|300|400|500|600|700|800|900)\b/
                 );
 
-                document.head.appendChild(link);
-            });
+                const weight = weightMatch
+                    ? weightMatch[0]
+                    : weightValue === "bold"
+                        ? "700"
+                        : "400";
 
-        } else if (settings.source === "file") {
-            // WOFF / WOFF2 파일 직접 불러오기
-            if (!("FontFace" in window)) {
-                throw new Error("이 브라우저는 FontFace를 지원하지 않아.");
+                const styleValue = face.style
+                    .getPropertyValue("font-style")
+                    .trim()
+                    .toLowerCase();
+
+                const fontStyle = styleValue.startsWith("italic")
+                    ? "italic"
+                    : styleValue.startsWith("oblique")
+                        ? "oblique"
+                        : "normal";
+
+                const query = `${fontStyle} ${weight} 16px ${result.family}`;
+
+                await document.fonts.load(query);
             }
 
-            const face = new FontFace(
-                family,
-                `url(${JSON.stringify(url)})`,
-                { weight: "400" }
+        } catch (error) {
+            clearCustomFont();
+            throw new Error(
+                "폰트를 불러오지 못했어. URL과 CORS 설정을 확인해 줘."
             );
-
-            await face.load();
-
-            document.fonts.add(face);
-            activeFontFace = face;
-
-        } else {
-            throw new Error("잘못된 폰트 소스야.");
         }
-
-        root.style.setProperty(
-            "--glvk-font-family",
-            makeFontStack(family)
-        );
 
         if (save) {
             saveSettings({
                 type: "custom",
-                family,
-                url,
-                source: settings.source
+                css
             });
         }
+
+        return unquote(result.family);
     }
 
-    // UI 생성
+    // 설정 UI 생성
     function createUI() {
         const container = document.createElement("div");
 
@@ -177,6 +275,7 @@
             >
                 <div class="glvk-font-header">
                     <strong>폰트 설정</strong>
+
                     <button
                         class="glvk-font-close"
                         type="button"
@@ -186,7 +285,7 @@
 
                 <form id="glvk-font-form">
                     <label for="glvk-font-mode">
-                        기본 글꼴
+                        글꼴 종류
                     </label>
 
                     <select id="glvk-font-mode">
@@ -199,50 +298,30 @@
                         </option>
 
                         <option value="custom">
-                            Custom
+                            Custom CSS
                         </option>
                     </select>
 
                     <div id="glvk-custom-fields" hidden>
-                        <label for="glvk-font-family">
-                            Font Family
+                        <label for="glvk-font-css">
+                            Font CSS
                         </label>
 
-                        <input
-                            id="glvk-font-family"
-                            type="text"
-                            placeholder="예: Pretendard"
-                            maxlength="100"
-                        >
-
-                        <label for="glvk-font-source">
-                            불러오기 방식
-                        </label>
-
-                        <select id="glvk-font-source">
-                            <option value="css">
-                                CSS URL
-                            </option>
-
-                            <option value="file">
-                                Font File URL
-                            </option>
-                        </select>
-
-                        <label for="glvk-font-url">
-                            Font URL
-                        </label>
-
-                        <input
-                            id="glvk-font-url"
-                            type="url"
-                            placeholder="https://example.com/font.css"
-                        >
+                        <textarea
+                            id="glvk-font-css"
+                            spellcheck="false"
+                            placeholder="@font-face {
+    font-family: 'MyFont';
+    src: url('https://example.com/font.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+    font-style: normal;
+}"
+                        ></textarea>
 
                         <small>
-                            CSS URL: 외부 CSS 스타일시트 주소
-                            <br>
-                            Font File URL: WOFF 또는 WOFF2 주소
+                            @font-face 규칙만 입력할 수 있어.
+                            여러 굵기를 등록하려면 여러 규칙을 작성하면 돼.
                         </small>
 
                         <button
@@ -272,16 +351,17 @@
         const mode = container.querySelector("#glvk-font-mode");
 
         const fields = container.querySelector("#glvk-custom-fields");
-        const family = container.querySelector("#glvk-font-family");
-        const source = container.querySelector("#glvk-font-source");
-        const url = container.querySelector("#glvk-font-url");
-
+        const cssInput = container.querySelector("#glvk-font-css");
         const status = container.querySelector("#glvk-font-status");
 
         // 패널 열기 / 닫기
         function setPanel(open) {
             panel.hidden = !open;
-            toggle.setAttribute("aria-expanded", String(open));
+
+            toggle.setAttribute(
+                "aria-expanded",
+                String(open)
+            );
         }
 
         toggle.addEventListener("click", () => {
@@ -298,7 +378,7 @@
             }
         });
 
-        // 폰트 종류 선택
+        // 글꼴 선택
         mode.addEventListener("change", () => {
             const selected = mode.value;
 
@@ -309,24 +389,24 @@
 
                 status.textContent = "폰트가 변경되었어.";
             } else {
-                status.textContent = "Custom 폰트 정보를 입력해 줘.";
+                status.textContent =
+                    "Custom CSS를 입력하고 적용해 줘.";
             }
         });
 
-        // Custom 폰트 적용
+        // Custom CSS 적용
         form.addEventListener("submit", async event => {
             event.preventDefault();
+
+            if (mode.value !== "custom") return;
 
             status.textContent = "폰트를 불러오는 중...";
 
             try {
-                await applyCustom({
-                    family: family.value,
-                    source: source.value,
-                    url: url.value
-                });
+                const family = await applyCustom(cssInput.value);
 
-                status.textContent = "폰트가 적용되었어!";
+                status.textContent =
+                    `적용 완료: ${family}`;
 
             } catch (error) {
                 console.error("[GLVK Font]", error);
@@ -337,17 +417,14 @@
                 fields.hidden = true;
 
                 status.textContent =
-                    `폰트 적용 실패: ${error.message} 기본 폰트로 복구했어.`;
+                    `적용 실패: ${error.message} Paperlogy로 복구했어.`;
             }
         });
 
-        // 이전 설정 복구
         return {
             mode,
             fields,
-            family,
-            source,
-            url,
+            cssInput,
             status
         };
     }
@@ -357,27 +434,29 @@
         const ui = createUI();
         const saved = loadSettings();
 
-        if (saved?.type === "custom") {
+        if (saved?.type === "custom" && typeof saved.css === "string") {
             ui.mode.value = "custom";
             ui.fields.hidden = false;
+            ui.cssInput.value = saved.css;
 
-            ui.family.value = saved.family || "";
-            ui.source.value = saved.source || "css";
-            ui.url.value = saved.url || "";
+            ui.status.textContent = "저장된 폰트를 불러오는 중...";
 
             try {
-                await applyCustom(saved, false);
+                const family = await applyCustom(saved.css, false);
 
-                ui.status.textContent = "저장된 Custom 폰트를 적용했어.";
+                ui.status.textContent =
+                    `저장된 폰트 적용 완료: ${family}`;
 
             } catch (error) {
+                console.error("[GLVK Font]", error);
+
                 applyPreset("paperlogy");
 
                 ui.mode.value = "paperlogy";
                 ui.fields.hidden = true;
 
                 ui.status.textContent =
-                    "저장된 폰트를 불러오지 못했어. 기본 폰트를 사용해.";
+                    "저장된 폰트를 불러오지 못했어. Paperlogy로 복구했어.";
             }
 
         } else {
@@ -392,5 +471,11 @@
         }
     }
 
-    init();
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init, {
+            once: true
+        });
+    } else {
+        init();
+    }
 })();

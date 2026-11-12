@@ -44,7 +44,72 @@
 
 /* 폰트 */
 
+/* 에이투지체 */
+
 @font-face {
+    font-family: 'A2z';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-1Thin.woff2') format('woff2');
+    font-weight: 100;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'A2z';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-2ExtraLight.woff2') format('woff2');
+    font-weight: 200;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'A2z';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-3Light.woff2') format('woff2');
+    font-weight: 300;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'A2z';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-4Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'A2z';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-5Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'A2z';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-6SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'A2z';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-7Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'A2z';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-8ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'A2z';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-9Black.woff2') format('woff2');
+    font-weight: 900;
+    font-display: swap;
+}
+
+/* @font-face {
     font-family: 'Paperozi';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-1Thin.woff2') format('woff2');
     font-weight: 100;
@@ -105,6 +170,10 @@
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-9Black.woff2') format('woff2');
     font-weight: 900;
     font-display: swap;
+} */
+
+:root {
+    --glvk-font-family: 'Paperozi', sans-serif;
 }
 
 .markdown-section {
@@ -169,27 +238,32 @@
 /* GLVK Font Settings */
 
 :root {
-    --glvk-font-family: 'Paperozi', sans-serif;
+    --glvk-font-family: 'A2z', sans-serif;
 }
 
-/* 사이트 기본 글꼴 */
+/* 본문 및 UI */
 body,
 .markdown-section,
 .sidebar,
 .sidebar-nav,
 .app-nav,
-.app-name-link {
+.app-name-link,
+.search input {
     font-family: var(--glvk-font-family) !important;
 }
 
-/* 코드 폰트는 별도로 유지 */
+/* 코드 폰트 */
 .markdown-section pre code,
 .markdown-section code[class*="language-"],
 .markdown-section code:not([class*="language-"]) {
-    font-family: 'D2Coding', 'JetBrains Mono', Consolas, monospace !important;
+    font-family:
+        'D2Coding',
+        'JetBrains Mono',
+        Consolas,
+        monospace !important;
 }
 
-/* 폰트 설정 버튼 */
+/* 설정 버튼 */
 #glvk-font-toggle {
     position: fixed;
     right: 24px;
@@ -219,7 +293,9 @@ body,
     bottom: 84px;
     z-index: 99999;
 
-    width: min(340px, calc(100vw - 32px));
+    width: min(360px, calc(100vw - 32px));
+    max-height: min(70vh, 600px);
+    overflow-y: auto;
     box-sizing: border-box;
 
     padding: 20px;
@@ -237,6 +313,7 @@ body,
     display: none !important;
 }
 
+/* 패널 헤더 */
 #glvk-font-panel .glvk-font-header {
     display: flex;
     justify-content: space-between;
@@ -248,16 +325,19 @@ body,
     font-size: 18px;
 }
 
+/* 입력 항목 */
 #glvk-font-panel label {
     display: block;
     margin-top: 12px;
     margin-bottom: 6px;
+
     font-size: 13px;
     font-weight: 600;
 }
 
 #glvk-font-panel input,
-#glvk-font-panel select {
+#glvk-font-panel select,
+#glvk-font-panel textarea {
     width: 100%;
     box-sizing: border-box;
 
@@ -272,14 +352,27 @@ body,
     font-size: 14px;
 }
 
+/* CSS 편집기 */
+#glvk-font-panel textarea {
+    min-height: 210px;
+    resize: vertical;
+
+    font-family: Consolas, monospace !important;
+    font-size: 12px;
+    line-height: 1.6;
+    tab-size: 4;
+}
+
+/* 버튼 */
 #glvk-font-panel button {
     cursor: pointer;
 }
 
+/* 적용 버튼 */
 #glvk-font-panel .glvk-font-apply {
     width: 100%;
     margin-top: 16px;
-    padding: 10px;
+    padding: 11px;
 
     border: none;
     border-radius: 7px;
@@ -290,6 +383,7 @@ body,
     font-weight: 700;
 }
 
+/* 닫기 버튼 */
 #glvk-font-panel .glvk-font-close {
     border: none;
     background: none;
@@ -297,16 +391,21 @@ body,
     font-size: 20px;
 }
 
+/* 상태 메시지 */
 #glvk-font-status {
     margin-top: 12px;
+
     font-size: 12px;
     color: #777;
     line-height: 1.5;
 }
 
+/* 안내 문구 */
 #glvk-font-panel small {
     display: block;
     margin-top: 6px;
+
     color: #777;
     font-size: 11px;
+    line-height: 1.5;
 }
