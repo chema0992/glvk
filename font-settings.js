@@ -7,7 +7,7 @@
     const ROOT = document.documentElement;
 
     const PRESETS = {
-        paperlogy: '"Paperozi", sans-serif',
+        A2z: '"A2z", sans-serif',
         system: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
     };
 
@@ -174,7 +174,7 @@
         clearCustomFont();
 
         if (!PRESETS[name]) {
-            name = "paperlogy";
+            name = "A2z";
         }
 
         ROOT.style.setProperty(
@@ -289,8 +289,8 @@
                     </label>
 
                     <select id="glvk-font-mode">
-                        <option value="paperlogy">
-                            Paperlogy
+                        <option value="A2z">
+                            A2z
                         </option>
 
                         <option value="system">
@@ -411,13 +411,13 @@
             } catch (error) {
                 console.error("[GLVK Font]", error);
 
-                applyPreset("paperlogy");
+                applyPreset("A2z");
 
-                mode.value = "paperlogy";
+                mode.value = "A2z";
                 fields.hidden = true;
 
                 status.textContent =
-                    `적용 실패: ${error.message} Paperlogy로 복구했어.`;
+                    `적용 실패: ${error.message} A2z로 복구했어.`;
             }
         });
 
@@ -450,19 +450,19 @@
             } catch (error) {
                 console.error("[GLVK Font]", error);
 
-                applyPreset("paperlogy");
+                applyPreset("A2z");
 
-                ui.mode.value = "paperlogy";
+                ui.mode.value = "A2z";
                 ui.fields.hidden = true;
 
                 ui.status.textContent =
-                    "저장된 폰트를 불러오지 못했어. Paperlogy로 복구했어.";
+                    "저장된 폰트를 불러오지 못했어. A2z로 복구했어.";
             }
 
         } else {
             const preset = saved?.preset === "system"
                 ? "system"
-                : "paperlogy";
+                : "A2z";
 
             applyPreset(preset);
 
