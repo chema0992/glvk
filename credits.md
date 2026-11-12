@@ -20,8 +20,8 @@ GLVK는 오픈소스 및 오픈 라이선스 그래픽스 강좌를 기반으로
 
 ## 폰트 출처
 
-기본 폰트로 에이투지체를 선택하였습니다.
-링크: https://freesentation.blog/a2z
+기본 폰트로 페이퍼로지체를 선택하였습니다.
+링크: https://freesentation.blog/paperlogyfont
 
 ---
 

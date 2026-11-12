@@ -44,7 +44,7 @@
 
 /* 폰트 */
 
-/* 에이투지체 */
+/* 에이투지체
 
 @font-face {
     font-family: 'A2z';
@@ -107,7 +107,7 @@
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-9Black.woff2') format('woff2');
     font-weight: 900;
     font-display: swap;
-}
+} */
 
 /* @font-face {
     font-family: 'Paperozi';
@@ -238,7 +238,7 @@
 /* GLVK Font Settings */
 
 :root {
-    --glvk-font-family: 'A2z', sans-serif;
+    --glvk-font-family: 'Paperozi', sans-serif;
 }
 
 /* 본문 및 UI */

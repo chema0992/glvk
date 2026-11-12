@@ -7,7 +7,7 @@
     const ROOT = document.documentElement;
 
     const PRESETS = {
-        A2z: '"A2z", sans-serif',
+        paperlogy: '"Paperozi", sans-serif',
         system: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
     };
 
